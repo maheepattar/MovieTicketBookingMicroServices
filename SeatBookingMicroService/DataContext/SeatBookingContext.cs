@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MovieManagerMicroService.DBEntities;
+using SeatBookingMicroService.DBEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MovieManagerMicroService.DataContext
+namespace SeatBookingMicroService.DataContext
 {
-    public class MovieContext : DbContext
+    public class SeatBookingContext : DbContext
     {
-        public MovieContext(DbContextOptions<MovieContext> options) : base(options)
+        public SeatBookingContext(DbContextOptions<SeatBookingContext> options) : base(options)
         {
             Database.Migrate();
         }
@@ -17,5 +17,7 @@ namespace MovieManagerMicroService.DataContext
         public DbSet<City> Cities { get; set; }
         public DbSet<Multiplex> Multiplexes { get; set; }
         public DbSet<Movie> Movies { get; set; }
+
+        public DbSet<Booking> Bookings { get; set; }
     }
 }
