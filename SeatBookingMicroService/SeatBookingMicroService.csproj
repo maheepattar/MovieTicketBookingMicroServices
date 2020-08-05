@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="DTO\" />
+    <Folder Include="DBEntities\" />
+    <Folder Include="DataContext\" />
+    <Folder Include="DataProviders\" />
+    <Folder Include="Utilities\" />
+  </ItemGroup>
+
+
+</Project>
