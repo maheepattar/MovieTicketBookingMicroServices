@@ -24,18 +24,20 @@ namespace MovieManagerMicroService.Controllers
 
         [HttpPost]
         [Route("addMovie")]
-        public IActionResult AddMovies([FromBody] MovieDTO movieInfo)
+        public async Task<IActionResult> AddMovies([FromBody] MovieDTO movieInfo)
         {
             if (movieInfo == null)
                 return BadRequest();
+
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            int newId = _movieRepository.AddMovies(movieInfo);
-            if (newId <= 0)
-                return StatusCode(500, "A problem happened while handling your request");
+            int newId = await _movieRepository.AddMovies(movieInfo);
 
-            return Created("bookingDetails", new { id = newId });
+            if (newId <= 0)
+                return StatusCode(500, "Error occured while adding movie. Try again.");
+
+            return Created("AddedMovie", new { id = newId });
         }
     }
 }

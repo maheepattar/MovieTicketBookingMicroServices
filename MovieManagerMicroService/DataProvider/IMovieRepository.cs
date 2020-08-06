@@ -9,16 +9,16 @@ namespace MovieManagerMicroService.ServiceProvider
 {
     public interface IMovieRepository
     {
-        IEnumerable<City> GetCities();
+        Task<IEnumerable<City>> GetCities();
 
-        IEnumerable<Multiplex> GetMultiplexes(int cityId);
+        Task<IEnumerable<Multiplex>> GetMultiplexes(int cityId);
 
-        IEnumerable<Movie> GetMovies(int multiplexId);
+        Task<IEnumerable<Movie>> GetMovies(int multiplexId);
 
-        IEnumerable<Movie> GetMovies(string language);
+        Task<IEnumerable<Movie>> GetMovies(string language);
 
-        int AddMovies(MovieDTO movieDto);
+        Task<int> AddMovies(MovieDTO movieDto);
 
-        IEnumerable<Movie> GetMoviesByGenre(string genre);
+        Task<IEnumerable<Movie>> GetMoviesByGenre(string genre);
     }
 }

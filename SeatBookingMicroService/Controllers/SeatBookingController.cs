@@ -24,20 +24,20 @@ namespace SeatBookingMicroService.Controllers
         }
 
         [Route("availableSeats")]
-        public IActionResult AvailableSeats(int movieId, string date)
+        public async Task<IActionResult> AvailableSeats(int movieId, string date)
         {
             //Fetch the existing bookings for the movieI
-            List<string> bookedSeats = seatBookingRepository.GetBookings(movieId, date);
+            List<string> bookedSeats = await this.seatBookingRepository.GetBookings(movieId, date);
 
             //Get avaiable seats for the movie before booking
-            string availableSeats = seatBookingRepository.AvailableSeats(seatBookingRepository.GetBookedSeats(bookedSeats));
+            string availableSeats = this.seatBookingRepository.AvailableSeats(seatBookingRepository.GetBookedSeats(bookedSeats));
             
             return Ok(availableSeats);
         }
 
         [HttpPost]
         [Route("book")]
-        public IActionResult BookMovie([FromBody] BookingDTO booking)
+        public async Task<IActionResult> BookMovie([FromBody] BookingDTO booking)
         {
             if (booking == null)
                 return BadRequest();
@@ -48,7 +48,7 @@ namespace SeatBookingMicroService.Controllers
             if (booking.SeatNo.Split(',').Count() > 5)
                 return StatusCode(405, new { message = "More than 5 seats are not allowed per booking." });
 
-            int bookedId = seatBookingRepository.BookMovieInMultiplex(booking);
+            int bookedId = await this.seatBookingRepository.BookMovieInMultiplex(booking);
 
             if (bookedId <= 0)
                 return StatusCode(500, "Erro occured while booking. Try again.");
@@ -59,12 +59,12 @@ namespace SeatBookingMicroService.Controllers
 
         [HttpGet]
         [Route("bookingDetails")]
-        public IActionResult BookingDetails(int id)
+        public async Task<IActionResult> BookingDetails(int id)
         {
             if (id <= 0)
                 return StatusCode(400, "Invalid/missing id");
 
-            var booking = seatBookingRepository.GetBooking(id);
+            var booking = await this.seatBookingRepository.GetBooking(id);
 
             if (booking == null)
                 return NotFound("No Bookings found");

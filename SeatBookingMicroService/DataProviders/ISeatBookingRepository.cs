@@ -9,15 +9,15 @@ namespace SeatBookingMicroService.DataProviders
 {
     public interface ISeatBookingRepository
     {
-        int BookMovieInMultiplex(BookingDTO bookingDto);
+        Task<int> BookMovieInMultiplex(BookingDTO bookingDto);
 
-        Booking GetBooking(int id);
+        Task<Booking> GetBooking(int id);
 
-        List<string> GetBookings(int movieId, string date);
-        bool Save();
+        Task<List<string>> GetBookings(int movieId, string date);
+        Task<bool> Save();
 
         List<int> GetBookedSeats(List<string> bookedSeats);
 
-        String AvailableSeats(List<int> bookedNumbers);
+        string AvailableSeats(List<int> bookedNumbers);
     }
 }

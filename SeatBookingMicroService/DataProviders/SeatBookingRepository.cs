@@ -1,4 +1,5 @@
-﻿using SeatBookingMicroService.DataContext;
+﻿using Microsoft.EntityFrameworkCore;
+using SeatBookingMicroService.DataContext;
 using SeatBookingMicroService.DBEntities;
 using SeatBookingMicroService.DTO;
 using System;
@@ -32,18 +33,18 @@ namespace SeatBookingMicroService.DataProviders
             return sb.ToString();
         }
 
-        public int BookMovieInMultiplex(BookingDTO bookingDto)
+        public async Task<int> BookMovieInMultiplex(BookingDTO bookingDto)
         {
             Booking newBooking = new Booking { MovieId = bookingDto.MovieId, Amount = bookingDto.Amount, SeatNo = bookingDto.SeatNo, UserId = bookingDto.UserId, DateToPresent = Convert.ToDateTime(bookingDto.DateToPresent) };
-            seatBookingContext.Bookings.Add(newBooking);
-            seatBookingContext.SaveChanges();
+            await seatBookingContext.Bookings.AddAsync(newBooking);
+            await seatBookingContext.SaveChangesAsync();
             return newBooking.Id;
         }
 
         public List<int> GetBookedSeats(List<string> bookedSeats)
         {
             List<int> lstBooked = new List<int>();
-            foreach (String str in bookedSeats)
+            foreach (string str in bookedSeats)
             {
                 string[] booked = str.Split(',');
                 foreach (string s in booked)
@@ -54,20 +55,20 @@ namespace SeatBookingMicroService.DataProviders
             return lstBooked;
         }
 
-        public Booking GetBooking(int id)
+        public async Task<Booking> GetBooking(int id)
         {
-            return seatBookingContext.Bookings.Where(x => x.Id == id).FirstOrDefault();
+            return await this.seatBookingContext.Bookings.Where(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public List<string> GetBookings(int movieId, string date)
+        public async Task<List<string>> GetBookings(int movieId, string date)
         {
-            return seatBookingContext.Bookings.Where(x => x.MovieId == movieId
-                        && x.DateToPresent.ToShortDateString() == Convert.ToDateTime(date).ToShortDateString()).Select(c => c.SeatNo).ToList();
+            return await this.seatBookingContext.Bookings.Where(x => x.MovieId == movieId
+                        && x.DateToPresent.ToShortDateString() == Convert.ToDateTime(date).ToShortDateString()).Select(c => c.SeatNo).ToListAsync();
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            return (seatBookingContext.SaveChanges() >= 0);
+            return await this.seatBookingContext.SaveChangesAsync() >= 0;
         }
     }
 }

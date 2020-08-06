@@ -22,10 +22,10 @@ namespace MovieManagerMicroService.Controllers
 
         [HttpGet]
         [Route("city")]
-        public IActionResult Cities()
+        public async Task<IActionResult> Cities()
         {
             var results = new List<CityDTO>();
-            var cities = _movieRepo.GetCities();
+            var cities = await _movieRepo.GetCities();
             if (cities == null || cities.Count() <= 0)
                 return BadRequest(new { message = "City information is not available." });
 
@@ -42,10 +42,10 @@ namespace MovieManagerMicroService.Controllers
 
         [HttpGet]
         [Route("multiplex/{cityId}")]
-        public IActionResult Multiplex(int cityId)
+        public async Task<IActionResult> Multiplex(int cityId)
         {
             var results = new List<MultiplexDTO>();
-            var multiplexes = _movieRepo.GetMultiplexes(cityId);
+            var multiplexes = await _movieRepo.GetMultiplexes(cityId);
             if (multiplexes != null && multiplexes.Count() <= 0)
                 return NotFound(new { message = "No multiplex found for this city." });
 
@@ -62,10 +62,10 @@ namespace MovieManagerMicroService.Controllers
 
         [HttpGet]
         [Route("movie/multiplex/{multiplexId}")]
-        public IActionResult Movies(int multiplexId)
+        public async Task<IActionResult> Movies(int multiplexId)
         {
             var results = new List<MovieDTO>();
-            var movies = _movieRepo.GetMovies(multiplexId);
+            var movies = await _movieRepo.GetMovies(multiplexId);
             if (movies != null && movies.Count() <= 0)
                 return NotFound(new { message = "No movie found for this multiplex." });
 
@@ -86,10 +86,10 @@ namespace MovieManagerMicroService.Controllers
 
         [HttpGet]
         [Route("movie/language/{language}")]
-        public IActionResult Movies(string language)
+        public async Task<IActionResult> Movies(string language)
         {
             var results = new List<MovieDTO>();
-            var movies = _movieRepo.GetMovies(language);
+            var movies = await _movieRepo.GetMovies(language);
             if (movies != null && movies.Count() <= 0)
                 return NotFound(new { message = "No movie found for this multiplex." });
 
@@ -110,10 +110,10 @@ namespace MovieManagerMicroService.Controllers
 
         [HttpGet]
         [Route("movie/genre/{genre}")]
-        public IActionResult MoviesByGenre(string genre)
+        public async Task<IActionResult> MoviesByGenre(string genre)
         {
             var results = new List<MovieDTO>();
-            var movies = _movieRepo.GetMoviesByGenre(genre);
+            var movies = await _movieRepo.GetMoviesByGenre(genre);
             if (movies != null && movies.Count() <= 0)
                 return NotFound(new { message = "No movie found for this genre." });
 

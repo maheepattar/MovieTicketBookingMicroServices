@@ -1,4 +1,5 @@
-﻿using MovieManagerMicroService.DataContext;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieManagerMicroService.DataContext;
 using MovieManagerMicroService.DBEntities;
 using MovieManagerMicroService.DTO;
 using System;
@@ -20,9 +21,9 @@ namespace MovieManagerMicroService.ServiceProvider
         /// Get a list of all cities
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<City> GetCities()
+        public async Task<IEnumerable<City>> GetCities()
         {
-            return _movieContext.Cities.OrderBy(x => x.CityName).AsEnumerable();
+            return await _movieContext.Cities.OrderBy(x => x.CityName).ToListAsync();
         }
 
         /// <summary>
@@ -30,9 +31,9 @@ namespace MovieManagerMicroService.ServiceProvider
         /// </summary>
         /// <param name="cityId"></param>
         /// <returns></returns>
-        public IEnumerable<Multiplex> GetMultiplexes(int cityId)
+        public async Task<IEnumerable<Multiplex>> GetMultiplexes(int cityId)
         {
-            return _movieContext.Multiplexes.Where(x => x.CityId == cityId).AsEnumerable();
+            return await _movieContext.Multiplexes.Where(x => x.CityId == cityId).ToListAsync();
         }
 
         /// <summary>
@@ -40,9 +41,9 @@ namespace MovieManagerMicroService.ServiceProvider
         /// </summary>
         /// <param name="multiplexId"></param>
         /// <returns></returns>
-        public IEnumerable<Movie> GetMovies(int multiplexId)
+        public async Task<IEnumerable<Movie>> GetMovies(int multiplexId)
         {
-            return _movieContext.Movies.Where(x => x.MultiplexId == multiplexId).AsEnumerable();
+            return await _movieContext.Movies.Where(x => x.MultiplexId == multiplexId).ToListAsync();
         }
 
         /// <summary>
@@ -50,9 +51,9 @@ namespace MovieManagerMicroService.ServiceProvider
         /// </summary>
         /// <param name="language"></param>
         /// <returns></returns>
-        public IEnumerable<Movie> GetMovies(string language)
+        public async Task<IEnumerable<Movie>> GetMovies(string language)
         {
-            return _movieContext.Movies.Where(x => x.MovieLanguage.ToLower() == language.ToLower()).AsEnumerable();
+            return await _movieContext.Movies.Where(x => x.MovieLanguage.ToLower() == language.ToLower()).ToListAsync();
         }
 
         /// <summary>
@@ -60,12 +61,12 @@ namespace MovieManagerMicroService.ServiceProvider
         /// </summary>
         /// <param name="movieId"></param>
         /// <returns></returns>
-        public IEnumerable<Movie> GetMoviesByGenre(string genre)
+        public async Task<IEnumerable<Movie>> GetMoviesByGenre(string genre)
         {
-            return _movieContext.Movies.Where(x => x.Genre == genre);
+            return await _movieContext.Movies.Where(x => x.Genre == genre).ToListAsync();
         }
 
-        public int AddMovies(MovieDTO movieDto)
+        public async Task<int> AddMovies(MovieDTO movieDto)
         {
             Movie newMovie = new Movie
             {
@@ -77,7 +78,8 @@ namespace MovieManagerMicroService.ServiceProvider
                 Genre = movieDto.Genre
 
             };
-            _movieContext.Movies.Add(newMovie);
+
+            await _movieContext.Movies.AddAsync(newMovie);
             _movieContext.SaveChanges();
             return newMovie.Id;
         }
