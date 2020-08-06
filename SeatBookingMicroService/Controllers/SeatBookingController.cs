@@ -61,7 +61,7 @@ namespace SeatBookingMicroService.Controllers
         }
 
         [HttpGet]
-        [Route("bookingDetails")]
+        [Route("bookingDetails/{id}")]
         public async Task<IActionResult> BookingDetails(int id)
         {
             if (id <= 0)

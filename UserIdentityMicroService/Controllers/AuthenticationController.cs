@@ -31,7 +31,7 @@ namespace UserIdentityMicroService.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public async Task<IActionResult> AuthenticateUser([FromBody] UserDTO userInfo)
+        public async Task<IActionResult> AuthenticateUser([FromBody] UserLoginDTO userInfo)
         {
             var user = await userService.Authenticate(userInfo.Username, userInfo.Password);
 

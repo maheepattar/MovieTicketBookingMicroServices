@@ -7,7 +7,7 @@ namespace SeatBookingMicroService.Utilities
 {
     public class AppSetting
     {
-        public string Secret { get; set; }
+        public string Secret => "secret key for movie ticket booking application";
         public string ConnectionStrings { get; set; }
     }
 }
