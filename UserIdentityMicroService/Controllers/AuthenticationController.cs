@@ -31,12 +31,12 @@ namespace UserIdentityMicroService.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult AuthenticateUser([FromBody] UserDTO userInfo)
+        public async Task<IActionResult> AuthenticateUser([FromBody] UserDTO userInfo)
         {
-            var user = userService.Authenticate(userInfo.Username, userInfo.Password);
+            var user = await userService.Authenticate(userInfo.Username, userInfo.Password);
 
             if (user == null)
-                return BadRequest(new { message = "Eitter Username or password is not correct" });
+                return BadRequest(new { message = "Either Username or password is not correct" });
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);

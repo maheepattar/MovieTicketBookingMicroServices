@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,9 +18,9 @@ namespace UserIdentityMicroService.DataProvides
         {
             this.userContext = _userCtx;
         }
-        public UserDTO Authenticate(string username, string password)
+        public async Task<UserDTO> Authenticate(string username, string password)
         {
-            var user = this.GetUser(username, password);
+            var user = await this.GetUser(username, password);
 
             if (user == null) 
                 return null;
@@ -34,9 +36,9 @@ namespace UserIdentityMicroService.DataProvides
             return userDTO;
         }
 
-        public User GetUser(string username, string password)
+        public async Task<User> GetUser(string username,string password)
         {
-            return userContext.Users.SingleOrDefault(x => x.Username == username && x.Password == password);
-        }
+            return await userContext.Users.SingleOrDefaultAsync(x => x.Username == username);
+        }       
     }
 }

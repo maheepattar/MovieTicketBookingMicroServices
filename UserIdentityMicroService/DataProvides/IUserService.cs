@@ -9,8 +9,8 @@ namespace UserIdentityMicroService.DataProvides
 {
     public interface IUserService
     {
-        UserDTO Authenticate(string username, string password);
+        Task<UserDTO> Authenticate(string username, string password);
 
-        User GetUser(string username, string password);
+        Task<User> GetUser(string username, string password);
     }
 }

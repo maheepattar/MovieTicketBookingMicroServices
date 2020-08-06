@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieManagerMicroService.DTO;
 using MovieManagerMicroService.ServiceProvider;
+using MovieManagerMicroService.Utilities;
 
 namespace MovieManagerMicroService.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Roles = Role.Admin)]
     [ApiController]
     public class AdminController : ControllerBase
     {
