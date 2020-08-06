@@ -22,7 +22,9 @@ namespace MovieManagerMicroService
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration;
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = new ConfigurationBuilder()
                             .SetBasePath(env.ContentRootPath)
@@ -37,7 +39,7 @@ namespace MovieManagerMicroService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc();
             services.AddCors();
 
 

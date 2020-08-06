@@ -53,7 +53,30 @@ namespace UserIdentityMicroService.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwtSecurityToken = tokenHandler.WriteToken(token);
-            return Ok(jwtSecurityToken);
+
+            return Ok(new
+            {
+                user.Username,
+                user.FirstName,
+                user.LastName,
+                Token = jwtSecurityToken
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] UserDTO userData)
+        {
+            try
+            {
+                // create user
+                await userService.Create(userData, userData.Password);
+                return Ok();
+            }
+            catch (CustomException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

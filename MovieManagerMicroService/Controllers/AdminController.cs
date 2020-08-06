@@ -34,6 +34,9 @@ namespace MovieManagerMicroService.Controllers
 
             int newId = await _movieRepository.AddMovies(movieInfo);
 
+            if (newId == 0)
+                return StatusCode(400, "Movie already added for the same time in the multiplex");
+
             if (newId <= 0)
                 return StatusCode(500, "Error occured while adding movie. Try again.");
 

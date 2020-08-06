@@ -68,6 +68,13 @@ namespace MovieManagerMicroService.ServiceProvider
 
         public async Task<int> AddMovies(MovieDTO movieDto)
         {
+            // Check if there is already a show scheduled at the same time & location
+
+            Movie showExist = _movieContext.Movies.Where(a => a.MultiplexId == movieDto.MultiplexId && a.DateAndTime.Date == movieDto.DateAndTime.Date).FirstOrDefault();
+
+            if (showExist != null)
+                return 0;
+
             Movie newMovie = new Movie
             {
                 Movie_Name = movieDto.Movie_Name,

@@ -22,7 +22,7 @@ namespace SeatBookingMicroService
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = new ConfigurationBuilder()
                            .SetBasePath(env.ContentRootPath)
