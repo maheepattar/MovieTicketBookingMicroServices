@@ -70,7 +70,8 @@ namespace MovieManagerMicroService.ServiceProvider
         {
             // Check if there is already a show scheduled at the same time & location
 
-            Movie showExist = _movieContext.Movies.Where(a => a.MultiplexId == movieDto.MultiplexId && a.DateAndTime.Date == movieDto.DateAndTime.Date).FirstOrDefault();
+            Movie showExist = _movieContext.Movies.Where(a => a.MultiplexId == movieDto.MultiplexId && 
+                                                        a.DateAndTime.Date == movieDto.DateAndTime.Date).FirstOrDefault();
 
             if (showExist != null)
                 return 0;

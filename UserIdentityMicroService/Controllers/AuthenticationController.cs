@@ -30,7 +30,7 @@ namespace UserIdentityMicroService.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("authenticate")]
         public async Task<IActionResult> AuthenticateUser([FromBody] UserDTO userInfo)
         {
             var user = await userService.Authenticate(userInfo.Username, userInfo.Password);
@@ -56,8 +56,8 @@ namespace UserIdentityMicroService.Controllers
 
             return Ok(new
             {
-                user.Username,
                 user.FirstName,
+                user.Username,
                 user.LastName,
                 Token = jwtSecurityToken
             });
@@ -67,6 +67,9 @@ namespace UserIdentityMicroService.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserDTO userData)
         {
+            if (userData == null)
+                return StatusCode(400, "User Data body is required.");
+
             try
             {
                 // create user

@@ -48,9 +48,6 @@ namespace UserIdentityMicroService
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
 
-           
-            
-
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var connectionString = appSettings.ConnectionStrings;
@@ -99,7 +96,18 @@ namespace UserIdentityMicroService
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.UseRouting();
+
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }

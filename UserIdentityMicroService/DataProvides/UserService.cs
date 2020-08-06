@@ -33,11 +33,16 @@ namespace UserIdentityMicroService.DataProvides
         }
         public async Task<UserDTO> Authenticate(string username, string password)
         {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                return null;
+
             var user = await this.GetUser(username, password);
 
+            // Not Authenticated
             if (user == null) 
                 return null;
 
+            // Authenticated
             var userDTO = new UserDTO()
             {
                 FirstName = user.FirstName,
@@ -90,7 +95,7 @@ namespace UserIdentityMicroService.DataProvides
 
         public async Task<User> GetUser(string username,string password)
         {
-            return await userContext.Users.SingleOrDefaultAsync(x => x.Username == username);
+            return await userContext.Users.SingleOrDefaultAsync(x => x.Username == username && x.Password == password);
         }
 
         public void Update(User user, string password = null)

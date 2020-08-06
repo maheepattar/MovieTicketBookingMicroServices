@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SeatBookingMicroService.Utilities;
 
 namespace SeatBookingMicroService.DataProviders
 {
@@ -18,10 +19,15 @@ namespace SeatBookingMicroService.DataProviders
             this.seatBookingContext = _seatBookingContext;
         }
 
+        /// <summary>
+        /// Available seats for the movie
+        /// </summary>
+        /// <param name="bookedNumbers"></param>
+        /// <returns></returns>
         public string AvailableSeats(List<int> bookedNumbers)
         {
             StringBuilder sb = new StringBuilder();
-            for (int i = 1; i <= 100; i++)
+            for (int i = 1; i <= Constants.MaxSeatsAllowed; i++)
             {
                 if (!bookedNumbers.Contains(i))
                 {
@@ -30,12 +36,18 @@ namespace SeatBookingMicroService.DataProviders
                         sb.Append(',');
                 }
             }
+
             return sb.ToString();
         }
 
         public async Task<int> BookMovieInMultiplex(BookingDTO bookingDto)
-        {
-            Booking newBooking = new Booking { MovieId = bookingDto.MovieId, Amount = bookingDto.Amount, SeatNo = bookingDto.SeatNo, UserId = bookingDto.UserId, DateToPresent = Convert.ToDateTime(bookingDto.DateToPresent) };
+        {            
+            Booking newBooking = new Booking 
+                    { MovieId = bookingDto.MovieId, Amount = bookingDto.Amount, 
+                      SeatNo = bookingDto.SeatNo, UserId = bookingDto.UserId, 
+                      DateToPresent = Convert.ToDateTime(bookingDto.DateToPresent) 
+                    };
+
             await seatBookingContext.Bookings.AddAsync(newBooking);
             await seatBookingContext.SaveChangesAsync();
             return newBooking.Id;
@@ -55,20 +67,22 @@ namespace SeatBookingMicroService.DataProviders
             return lstBooked;
         }
 
-        public async Task<Booking> GetBooking(int id)
+        public async Task<Booking> GetBookingDetailsById(int id)
         {
             return await this.seatBookingContext.Bookings.Where(x => x.Id == id).FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        /// Gets the seats booked for the given movie and date
+        /// </summary>
+        /// <param name="movieId">movie id</param>
+        /// <param name="date">date</param>
+        /// <returns>Seats</returns>
         public async Task<List<string>> GetBookings(int movieId, string date)
         {
-            return await this.seatBookingContext.Bookings.Where(x => x.MovieId == movieId
-                        && x.DateToPresent.ToShortDateString() == Convert.ToDateTime(date).ToShortDateString()).Select(c => c.SeatNo).ToListAsync();
-        }
-
-        public async Task<bool> Save()
-        {
-            return await this.seatBookingContext.SaveChangesAsync() >= 0;
+            return await this.seatBookingContext.Bookings.Where(x => x.MovieId == movieId && 
+                    x.DateToPresent.Date == Convert.ToDateTime(date))
+                    .Select(c => c.SeatNo).ToListAsync();
         }
     }
 }

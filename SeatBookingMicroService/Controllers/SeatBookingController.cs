@@ -26,7 +26,7 @@ namespace SeatBookingMicroService.Controllers
         [Route("availableSeats")]
         public async Task<IActionResult> AvailableSeats(int movieId, string date)
         {
-            //Fetch the existing bookings for the movieI
+            //Fetch the existing bookings for the movie
             List<string> bookedSeats = await this.seatBookingRepository.GetBookings(movieId, date);
 
             //Get avaiable seats for the movie before booking
@@ -39,21 +39,24 @@ namespace SeatBookingMicroService.Controllers
         [Route("book")]
         public async Task<IActionResult> BookMovie([FromBody] BookingDTO booking)
         {
+            int totalSeatsSelected = booking.SeatNo.Split(',').Count();
+
             if (booking == null)
-                return BadRequest();
+                return StatusCode(400, Constants.NullObject("booking"));
 
             if (!ModelState.IsValid)
-                return BadRequest();
+                return StatusCode(400, Constants.NullObject("booking"));
 
-            if (booking.SeatNo.Split(',').Count() > 5)
-                return StatusCode(405, new { message = "More than 5 seats are not allowed per booking." });
+            if (totalSeatsSelected  > 5)
+                return StatusCode(405, Constants.MaxBooking);
 
             int bookedId = await this.seatBookingRepository.BookMovieInMultiplex(booking);
 
             if (bookedId <= 0)
-                return StatusCode(500, "Erro occured while booking. Try again.");
+                return StatusCode(500, Constants.UnknownErrors);
 
-            return Created("bookingDetails", new { id = bookedId });
+            return Created("bookingDetails", new 
+                    { id = bookedId, Seats = booking.SeatNo, Date = booking.DateToPresent, Amount = booking.Amount });
 
         }
 
@@ -62,12 +65,12 @@ namespace SeatBookingMicroService.Controllers
         public async Task<IActionResult> BookingDetails(int id)
         {
             if (id <= 0)
-                return StatusCode(400, "Invalid/missing id");
+                return StatusCode(400, Constants.InvalidId);
 
-            var booking = await this.seatBookingRepository.GetBooking(id);
+            var booking = await this.seatBookingRepository.GetBookingDetailsById(id);
 
             if (booking == null)
-                return NotFound("No Bookings found");
+                return StatusCode(404, Constants.NoBookings);
 
             BookingDTO results = new BookingDTO 
                 { Amount = booking.Amount, DateToPresent = Convert.ToString(booking.DateToPresent), MovieId = booking.MovieId, 

@@ -11,10 +11,9 @@ namespace SeatBookingMicroService.DataProviders
     {
         Task<int> BookMovieInMultiplex(BookingDTO bookingDto);
 
-        Task<Booking> GetBooking(int id);
+        Task<Booking> GetBookingDetailsById(int id);
 
         Task<List<string>> GetBookings(int movieId, string date);
-        Task<bool> Save();
 
         List<int> GetBookedSeats(List<string> bookedSeats);
 
