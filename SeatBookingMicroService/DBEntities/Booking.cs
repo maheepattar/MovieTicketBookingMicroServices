@@ -12,8 +12,10 @@ namespace SeatBookingMicroService.DBEntities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
         [Required]
         public string SeatNo { get; set; }
+        
         [Required]
         public string UserId { get; set; }
         public DateTime DateToPresent { get; set; }
@@ -21,6 +23,7 @@ namespace SeatBookingMicroService.DBEntities
 
         [ForeignKey("MovieId")]
         public Movie Movie { get; set; }
+
         public int MovieId { get; set; }
     }
 }

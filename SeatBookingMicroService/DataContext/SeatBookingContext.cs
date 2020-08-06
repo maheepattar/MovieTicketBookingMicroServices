@@ -14,10 +14,6 @@ namespace SeatBookingMicroService.DataContext
             Database.Migrate();
         }
 
-        public DbSet<City> Cities { get; set; }
-        public DbSet<Multiplex> Multiplexes { get; set; }
-        public DbSet<Movie> Movies { get; set; }
-
         public DbSet<Booking> Bookings { get; set; }
     }
 }

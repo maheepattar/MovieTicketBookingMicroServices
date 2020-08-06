@@ -68,7 +68,6 @@ namespace SeatBookingMicroService
 
             services.AddDbContext<SeatBookingContext>(o => o.UseSqlServer(connectionString));
             services.AddScoped<ISeatBookingRepository, SeatBookingRepository>();
-            services.AddScoped<IBookingService, BookingLogic>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

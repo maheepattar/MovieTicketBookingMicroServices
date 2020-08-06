@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MovieManagerMicroService.DataContext;
+using SeatBookingMicroService.DataContext;
 
-namespace MovieManagerMicroService.Migrations
+namespace SeatBookingMicroService.Migrations
 {
-    [DbContext(typeof(MovieContext))]
-    [Migration("20200805175517_MyFirstMigration")]
-    partial class MyFirstMigration
+    [DbContext(typeof(SeatBookingContext))]
+    partial class SeatBookingContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,7 +19,38 @@ namespace MovieManagerMicroService.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("MovieManagerMicroService.DBEntities.City", b =>
+            modelBuilder.Entity("SeatBookingMicroService.DBEntities.Booking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateToPresent")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SeatNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("SeatBookingMicroService.DBEntities.City", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,10 +62,10 @@ namespace MovieManagerMicroService.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cities");
+                    b.ToTable("City");
                 });
 
-            modelBuilder.Entity("MovieManagerMicroService.DBEntities.Movie", b =>
+            modelBuilder.Entity("SeatBookingMicroService.DBEntities.Movie", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,7 +76,6 @@ namespace MovieManagerMicroService.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Genre")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MovieLanguage")
@@ -67,10 +95,10 @@ namespace MovieManagerMicroService.Migrations
 
                     b.HasIndex("MultiplexId");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Movie");
                 });
 
-            modelBuilder.Entity("MovieManagerMicroService.DBEntities.Multiplex", b =>
+            modelBuilder.Entity("SeatBookingMicroService.DBEntities.Multiplex", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,21 +115,30 @@ namespace MovieManagerMicroService.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("Multiplexes");
+                    b.ToTable("Multiplex");
                 });
 
-            modelBuilder.Entity("MovieManagerMicroService.DBEntities.Movie", b =>
+            modelBuilder.Entity("SeatBookingMicroService.DBEntities.Booking", b =>
                 {
-                    b.HasOne("MovieManagerMicroService.DBEntities.Multiplex", "Multiplex")
+                    b.HasOne("SeatBookingMicroService.DBEntities.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SeatBookingMicroService.DBEntities.Movie", b =>
+                {
+                    b.HasOne("SeatBookingMicroService.DBEntities.Multiplex", "Multiplex")
                         .WithMany()
                         .HasForeignKey("MultiplexId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MovieManagerMicroService.DBEntities.Multiplex", b =>
+            modelBuilder.Entity("SeatBookingMicroService.DBEntities.Multiplex", b =>
                 {
-                    b.HasOne("MovieManagerMicroService.DBEntities.City", "City")
+                    b.HasOne("SeatBookingMicroService.DBEntities.City", "City")
                         .WithMany()
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
