@@ -14,59 +14,33 @@ namespace SeatBookingMicroService.DataProviders
     public class SeatBookingRepository : ISeatBookingRepository
     {
         private readonly SeatBookingContext seatBookingContext;
+
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="_seatBookingContext"></param>
         public SeatBookingRepository(SeatBookingContext _seatBookingContext)
         {
             this.seatBookingContext = _seatBookingContext;
         }
 
         /// <summary>
-        /// Available seats for the movie
+        /// New ticket booking
         /// </summary>
-        /// <param name="bookedNumbers"></param>
-        /// <returns></returns>
-        public string AvailableSeats(List<int> bookedNumbers)
+        /// <param name="booking">booking</param>
+        /// <returns><ID/returns>
+        public async Task<int> SubmitBooking(Booking booking)
         {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 1; i <= Constants.MaxSeatsAllowed; i++)
-            {
-                if (!bookedNumbers.Contains(i))
-                {
-                    sb.Append(Convert.ToString(i));
-                    if (i != 100)
-                        sb.Append(',');
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        public async Task<int> BookMovieInMultiplex(BookingDTO bookingDto)
-        {            
-            Booking newBooking = new Booking 
-                    { MovieId = bookingDto.MovieId, Amount = bookingDto.Amount, 
-                      SeatNo = bookingDto.SeatNo, UserId = bookingDto.UserId, 
-                      DateToPresent = Convert.ToDateTime(bookingDto.DateToPresent) 
-                    };
-
-            await seatBookingContext.Bookings.AddAsync(newBooking);
+            await seatBookingContext.Bookings.AddAsync(booking);
             await seatBookingContext.SaveChangesAsync();
-            return newBooking.Id;
+            return booking.Id;
         }
 
-        public List<int> GetBookedSeats(List<string> bookedSeats)
-        {
-            List<int> lstBooked = new List<int>();
-            foreach (string str in bookedSeats)
-            {
-                string[] booked = str.Split(',');
-                foreach (string s in booked)
-                {
-                    lstBooked.Add(Convert.ToInt32(s));
-                }
-            }
-            return lstBooked;
-        }
-
+        /// <summary>
+        /// Get Booking Details By Id
+        /// </summary>
+        /// <param name="id">id</param>
+        /// <returns>Booking</returns>
         public async Task<Booking> GetBookingDetailsById(int id)
         {
             return await this.seatBookingContext.Bookings.Where(x => x.Id == id).FirstOrDefaultAsync();

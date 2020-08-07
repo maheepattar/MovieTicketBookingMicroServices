@@ -69,7 +69,9 @@ namespace SeatBookingMicroService
             });
 
             services.AddDbContext<SeatBookingContext>(o => o.UseSqlServer(connectionString));
-            services.AddScoped<ISeatBookingRepository, SeatBookingRepository>();
+
+            services.AddTransient<ISeatBookingService, SeatBookingService>();
+            services.AddTransient<ISeatBookingRepository, SeatBookingRepository>();
 
             services.AddSwaggerGen(opt =>
             {

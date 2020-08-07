@@ -9,13 +9,13 @@
             Seat Booking Controller
             </summary>
         </member>
-        <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.#ctor(SeatBookingMicroService.DataProviders.ISeatBookingRepository)">
+        <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.#ctor(SeatBookingMicroService.DataProviders.ISeatBookingService)">
             <summary>
             Ctor - Seat Booking Controller
             </summary>
             <param name="_seatBookingRepository"></param>
         </member>
-        <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.AvailableSeats(System.Int32,System.String)">
+        <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.EmptySeats(System.Int32,System.String)">
             <summary>
             Gets the available seats for given moviea and date
             </summary>
@@ -47,12 +47,19 @@
             <response code="500">Internal Server Error</response>
             <returns>Booked details</returns>
         </member>
-        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingRepository.AvailableSeats(System.Collections.Generic.List{System.Int32})">
+        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingRepository.#ctor(SeatBookingMicroService.DataContext.SeatBookingContext)">
             <summary>
-            Available seats for the movie
+            Ctor
             </summary>
-            <param name="bookedNumbers"></param>
-            <returns></returns>
+            <param name="_seatBookingContext"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:SeatBookingMicroService.DataProviders.SeatBookingRepository.SubmitBooking(SeatBookingMicroService.DBEntities.Booking)" -->
+        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingRepository.GetBookingDetailsById(System.Int32)">
+            <summary>
+            Get Booking Details By Id
+            </summary>
+            <param name="id">id</param>
+            <returns>Booking</returns>
         </member>
         <member name="M:SeatBookingMicroService.DataProviders.SeatBookingRepository.GetBookings(System.Int32,System.String)">
             <summary>
@@ -61,6 +68,58 @@
             <param name="movieId">movie id</param>
             <param name="date">date</param>
             <returns>Seats</returns>
+        </member>
+        <member name="T:SeatBookingMicroService.DataProviders.SeatBookingService">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingService.#ctor(SeatBookingMicroService.DataProviders.ISeatBookingRepository)">
+            <summary>
+            
+            </summary>
+            <param name="seatBookingRepository"></param>
+        </member>
+        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingService.AvailableSeats(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            AvailableSeats
+            </summary>
+            <param name="bookedNumbers">bookedNumbers</param>
+            <returns>Seats</returns>
+        </member>
+        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingService.BookMovie(SeatBookingMicroService.DTO.BookingDTO)">
+            <summary>
+            Book Movie In Multiplex
+            </summary>
+            <param name="bookingDto"></param>
+            <returns>Id</returns>
+        </member>
+        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingService.GetBookedSeats(System.Collections.Generic.List{System.String})">
+            <summary>
+            Ge tBooked Seats
+            </summary>
+            <param name="bookedSeats"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingService.GetBookingDetailsById(System.Int32)">
+            <summary>
+            Get Booking Details By Id
+            </summary>
+            <param name="id">id</param>
+            <returns>Booking</returns>
+        </member>
+        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingService.GetBookings(System.Int32,System.String)">
+            <summary>
+            Get Bookings
+            </summary>
+            <param name="movieId">movieId</param>
+            <param name="date">date</param>
+            <returns>Booking Made</returns>
+        </member>
+        <member name="T:SeatBookingMicroService.Utilities.Routes">
+            <summary>
+            Defines Routes
+            </summary>
         </member>
     </members>
 </doc>

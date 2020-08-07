@@ -15,19 +15,19 @@ namespace SeatBookingMicroService.Controllers
     /// Seat Booking Controller
     /// </summary>
     [Route("api/[controller]")]
-    [Authorize(Roles = Role.Customer)]
+    // [Authorize(Roles = Role.Customer)]
     [ApiController]
     public class SeatBookingController : ControllerBase
     {
-        private readonly ISeatBookingRepository seatBookingRepository;
+        private readonly ISeatBookingService seatBookingService;
 
         /// <summary>
         /// Ctor - Seat Booking Controller
         /// </summary>
         /// <param name="_seatBookingRepository"></param>
-        public SeatBookingController(ISeatBookingRepository _seatBookingRepository)
+        public SeatBookingController(ISeatBookingService seatBookingService)
         {
-            this.seatBookingRepository = _seatBookingRepository;
+            this.seatBookingService = seatBookingService;
         }
 
         /// <summary>
@@ -40,20 +40,20 @@ namespace SeatBookingMicroService.Controllers
         /// <response code="500">Internal Server Error</response>
         /// <returns>Available seats</returns>
         [HttpGet]
-        [Route("availableSeats")]
-        public async Task<IActionResult> AvailableSeats(int movieId, string date)
+        [Route(Routes.AvailableSeats)]
+        public async Task<IActionResult> EmptySeats(int movieId, string date)
         {
             if (movieId <= 0)
                 return StatusCode(400, new { message = Constants.InvalidInput("movieId") });
 
-            if (!string.IsNullOrWhiteSpace(date))
+            if (string.IsNullOrWhiteSpace(date))
                 return StatusCode(400, new { message = Constants.InvalidInput("date") });
 
             //Fetch the existing bookings for the movie
-            List<string> bookedSeats = await this.seatBookingRepository.GetBookings(movieId, date);
+            List<string> bookedSeats = await this.seatBookingService.GetBookings(movieId, date);
 
             //Get avaiable seats for the movie before booking
-            string availableSeats = this.seatBookingRepository.AvailableSeats(seatBookingRepository.GetBookedSeats(bookedSeats));
+            string availableSeats = this.seatBookingService.AvailableSeats(seatBookingService.GetBookedSeats(bookedSeats));
             
             return Ok(availableSeats);
         }
@@ -68,7 +68,7 @@ namespace SeatBookingMicroService.Controllers
         /// <response code="500">Internal Server Error</response>
         /// <returns>Booking Details</returns>
         [HttpPost]
-        [Route("book")]
+        [Route(Routes.SubmitBooking)]
         public async Task<IActionResult> BookMovie([FromBody] BookingDTO booking)
         {
             if (booking == null)
@@ -78,16 +78,17 @@ namespace SeatBookingMicroService.Controllers
                 return StatusCode(400, new { message = Constants.InvalidInput("booking") });
             
             int totalSeatsSelected = booking.SeatNo.Split(',').Count();
-            if (totalSeatsSelected > 5)
-                return StatusCode(405, new { message = Constants.MaxBooking });
 
-            int bookedId = await this.seatBookingRepository.BookMovieInMultiplex(booking);
+            if (totalSeatsSelected > 5)
+                return StatusCode(400, new { message = Constants.MaxBooking });
+
+            int bookedId = await this.seatBookingService.BookMovie(booking);
 
             if (bookedId <= 0)
                 return StatusCode(500, new { message = Constants.UnknownErrors });
 
             return Created("bookingDetails", new 
-                    { id = bookedId, Seats = booking.SeatNo, Date = booking.DateToPresent, Amount = booking.Amount });
+                    { id = bookedId, Seats = booking.SeatNo, Date = booking.BookingDate, Amount = booking.Amount });
 
         }
 
@@ -100,19 +101,19 @@ namespace SeatBookingMicroService.Controllers
         /// <response code="500">Internal Server Error</response>
         /// <returns>Booked details</returns>
         [HttpGet]
-        [Route("bookingDetails/{id}")]
+        [Route(Routes.BookingById)]
         public async Task<IActionResult> BookingDetails(int id)
         {
             if (id <= 0)
                 return StatusCode(400, new { message = Constants.InvalidInput("id") });
 
-            var booking = await this.seatBookingRepository.GetBookingDetailsById(id);
+            var booking = await this.seatBookingService.GetBookingDetailsById(id);
 
             if (booking == null)
                 return StatusCode(404, new { message = Constants.NoBookings });
 
             BookingDTO results = new BookingDTO 
-                { Amount = booking.Amount, DateToPresent = Convert.ToString(booking.DateToPresent), MovieId = booking.MovieId, 
+                { Amount = booking.Amount, BookingDate = booking.BookingDate, MovieId = booking.MovieId, 
                   SeatNo = booking.SeatNo, UserId = booking.SeatNo };
             
             return Ok(results);
