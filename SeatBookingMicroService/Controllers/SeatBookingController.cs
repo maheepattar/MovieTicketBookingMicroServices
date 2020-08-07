@@ -11,6 +11,9 @@ using SeatBookingMicroService.Utilities;
 
 namespace SeatBookingMicroService.Controllers
 {
+    /// <summary>
+    /// Seat Booking Controller
+    /// </summary>
     [Route("api/[controller]")]
     [Authorize(Roles = Role.Customer)]
     [ApiController]
@@ -18,6 +21,10 @@ namespace SeatBookingMicroService.Controllers
     {
         private readonly ISeatBookingRepository seatBookingRepository;
 
+        /// <summary>
+        /// Ctor - Seat Booking Controller
+        /// </summary>
+        /// <param name="_seatBookingRepository"></param>
         public SeatBookingController(ISeatBookingRepository _seatBookingRepository)
         {
             this.seatBookingRepository = _seatBookingRepository;
@@ -28,6 +35,9 @@ namespace SeatBookingMicroService.Controllers
         /// </summary>
         /// <param name="movieId">movieId</param>
         /// <param name="date">date</param>
+        /// <response code="200">Success</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">Internal Server Error</response>
         /// <returns>Available seats</returns>
         [HttpGet]
         [Route("availableSeats")]
@@ -52,6 +62,10 @@ namespace SeatBookingMicroService.Controllers
         /// Book movie
         /// </summary>
         /// <param name="booking">booking</param>
+        /// <response code="200">Success</response>
+        /// <response code="201">Created</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">Internal Server Error</response>
         /// <returns>Booking Details</returns>
         [HttpPost]
         [Route("book")]
@@ -81,6 +95,9 @@ namespace SeatBookingMicroService.Controllers
         /// Gets the booking details by Id
         /// </summary>
         /// <param name="id">Id</param>
+        /// <response code="200">Success</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">Internal Server Error</response>
         /// <returns>Booked details</returns>
         [HttpGet]
         [Route("bookingDetails/{id}")]

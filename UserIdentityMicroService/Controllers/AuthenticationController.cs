@@ -17,13 +17,21 @@ using UserIdentityMicroService.Utilities;
 
 namespace UserIdentityMicroService.Controllers
 {
-    [Route("api/[controller]")]
+    /// <summary>
+    /// Authentication Controller
+    /// </summary>
+    [Route("api/account")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
         private readonly AppSettings appSettings;
         private readonly IUserService userService;
         
+        /// <summary>
+        /// Ctor
+        /// </summary>
+        /// <param name="_userService"></param>
+        /// <param name="options"></param>
         public AuthenticationController(IUserService _userService, IOptions<AppSettings> options)
         {
             this.userService = _userService;
@@ -34,6 +42,9 @@ namespace UserIdentityMicroService.Controllers
         /// Authenticates User
         /// </summary>
         /// <param name="userInfo">user data</param>
+        /// <response code="200">Success</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="500">Internal Server Error</response>
         /// <returns>User details with token</returns>
         [AllowAnonymous]
         [HttpPost("authenticate")]
@@ -86,6 +97,9 @@ namespace UserIdentityMicroService.Controllers
         /// New user Registration
         /// </summary>
         /// <param name="userData">userData</param>
+        /// <response code="201">Created</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="500">Internal Server Error</response>
         /// <returns>User Details</returns>
         [AllowAnonymous]
         [HttpPost("register")]
@@ -100,7 +114,9 @@ namespace UserIdentityMicroService.Controllers
             try
             {
                 await userService.Create(userData, userData.Password);
-                return Ok();
+                return Created("Registered", new { 
+                    Username = userData.Username
+                });
             }
             catch (CustomException ex)
             {

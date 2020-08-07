@@ -13,12 +13,20 @@ using MovieManagerMicroService.Utilities;
 
 namespace MovieManagerMicroService.Controllers
 {
+    /// <summary>
+    /// Admin Controller
+    /// </summary>
     [Route("api/[controller]")]
     [Authorize(Roles = Role.Admin)]
     [ApiController]
     public class AdminController : ControllerBase
     {
         private readonly IMovieRepository _movieRepository;
+        
+        /// <summary>
+        /// Ctor - Admin Controller
+        /// </summary>
+        /// <param name="movieRepository"></param>
         public AdminController(IMovieRepository movieRepository)
         {
             _movieRepository = movieRepository;
@@ -28,6 +36,11 @@ namespace MovieManagerMicroService.Controllers
         /// Add new movie
         /// </summary>
         /// <param name="movieInfo">movie object</param>
+        /// <response code="200">Success</response>
+        /// <response code="201">Created</response>
+        /// <response code="204">No COntent</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">Internal Server Error</response>
         /// <returns>added movie details</returns>
         [HttpPost]
         [Route("addMovie")]
