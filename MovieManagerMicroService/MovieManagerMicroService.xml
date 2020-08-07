@@ -79,5 +79,35 @@
             <param name="movieId"></param>
             <returns></returns>
         </member>
+        <member name="T:MovieManagerMicroService.Startup">
+            <summary>
+            Start up class to initilize required configuration
+            </summary>
+        </member>
+        <member name="M:MovieManagerMicroService.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            Ctor. Inject services
+            </summary>
+            <param name="configuration"></param>
+            <param name="env"></param>
+        </member>
+        <member name="P:MovieManagerMicroService.Startup.Configuration">
+            <summary>
+            Configuration
+            </summary>
+        </member>
+        <member name="M:MovieManagerMicroService.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services">services</param>
+        </member>
+        <member name="M:MovieManagerMicroService.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+            <param name="app">app</param>
+            <param name="env">env</param>
+        </member>
     </members>
 </doc>

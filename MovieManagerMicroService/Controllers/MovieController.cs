@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
+using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieManagerMicroService.DBEntities;
@@ -12,11 +13,19 @@ using MovieManagerMicroService.Utilities;
 
 namespace MovieManagerMicroService.Controllers
 {
+    /// <summary>
+    /// Movie Controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class MovieController : ControllerBase
     {
         private readonly IMovieRepository _movieRepo;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="movieRepository"></param>
         public MovieController(IMovieRepository movieRepository)
         {
             _movieRepo = movieRepository;
@@ -117,6 +126,7 @@ namespace MovieManagerMicroService.Controllers
         /// <returns>list of movies</returns>
         [HttpGet]
         [Route("movie/language/{language}")]
+        [EnableQuery()]
         public async Task<IActionResult> Movies(string language)
         {
             if (!string.IsNullOrWhiteSpace(language))
@@ -148,6 +158,7 @@ namespace MovieManagerMicroService.Controllers
         /// </summary>
         /// <param name="genre">genre</param>
         /// <returns>list of movies</returns>
+        [EnableQuery()]
         [HttpGet]
         [Route("movie/genre/{genre}")]
         public async Task<IActionResult> MoviesByGenre(string genre)

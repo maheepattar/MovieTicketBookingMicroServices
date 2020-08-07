@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,10 +24,19 @@ using MovieManagerMicroService.Utilities;
 
 namespace MovieManagerMicroService
 {
+    /// <summary>
+    /// Start up class to initilize required configuration
+    /// </summary>
     public class Startup
     {
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
+        
+        /// <summary>
+        /// Ctor. Inject services
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="env"></param>
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = new ConfigurationBuilder()
@@ -37,16 +47,20 @@ namespace MovieManagerMicroService
                             .Build();
         }
 
+        /// <summary>
+        /// Configuration
+        /// </summary>
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services">services</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
             services.AddCors();
-
-
-            var appSettingsSection = Configuration.GetSection("AppSettings"); //should be stored in KeyVault ideally.
+            var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -74,7 +88,6 @@ namespace MovieManagerMicroService
             });
 
             services.AddScoped<IMovieRepository, MovieRepository>();
-
             services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Movie Manager MicroService", Version = "v1" });
@@ -83,9 +96,14 @@ namespace MovieManagerMicroService
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 opt.IncludeXmlComments(xmlPath);
             });
+            // services.AddOData();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app">app</param>
+        /// <param name="env">env</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -103,10 +121,14 @@ namespace MovieManagerMicroService
 
             app.UseHttpsRedirection();
 
+            //app.UseMvc(routeBuilder =>
+            //{
+            //    routeBuilder.EnableDependencyInjection();
+            //    routeBuilder.Expand().Select().Filter().Count().OrderBy();
+            //});
+
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
