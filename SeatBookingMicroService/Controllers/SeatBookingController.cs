@@ -24,7 +24,7 @@ namespace SeatBookingMicroService.Controllers
         /// <summary>
         /// Ctor - Seat Booking Controller
         /// </summary>
-        /// <param name="_seatBookingRepository"></param>
+        /// <param name="seatBookingService">seatBookingRepository</param>
         public SeatBookingController(ISeatBookingService seatBookingService)
         {
             this.seatBookingService = seatBookingService;

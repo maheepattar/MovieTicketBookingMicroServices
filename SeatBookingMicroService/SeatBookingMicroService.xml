@@ -13,7 +13,7 @@
             <summary>
             Ctor - Seat Booking Controller
             </summary>
-            <param name="_seatBookingRepository"></param>
+            <param name="seatBookingService">seatBookingRepository</param>
         </member>
         <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.EmptySeats(System.Int32,System.String)">
             <summary>
