@@ -22,6 +22,10 @@ namespace MovieManagerMicroService.Controllers
             _movieRepo = movieRepository;
         }
 
+        /// <summary>
+        /// Get all the cities
+        /// </summary>
+        /// <returns>Cities</returns>
         [HttpGet]
         [Route("city")]
         public async Task<IActionResult> Cities()
@@ -44,6 +48,11 @@ namespace MovieManagerMicroService.Controllers
             return Ok(cities);
         }
 
+        /// <summary>
+        /// Get all multiplexes belongs the city
+        /// </summary>
+        /// <param name="cityId">cityId</param>
+        /// <returns>list of multiplexes</returns>
         [HttpGet]
         [Route("multiplex/{cityId}")]
         public async Task<IActionResult> Multiplex(int cityId)
@@ -68,6 +77,11 @@ namespace MovieManagerMicroService.Controllers
             return Ok(results);
         }
 
+        /// <summary>
+        /// Gets all movies are running in the given multiplex
+        /// </summary>
+        /// <param name="multiplexId">multiplexId</param>
+        /// <returns>list of Multiplex</returns>
         [HttpGet]
         [Route("movie/multiplex/{multiplexId}")]
         public async Task<IActionResult> Movies(int multiplexId)
@@ -96,6 +110,11 @@ namespace MovieManagerMicroService.Controllers
             return Ok(results);
         }
 
+        /// <summary>
+        /// Gets the movies by language
+        /// </summary>
+        /// <param name="language">language</param>
+        /// <returns>list of movies</returns>
         [HttpGet]
         [Route("movie/language/{language}")]
         public async Task<IActionResult> Movies(string language)
@@ -124,6 +143,11 @@ namespace MovieManagerMicroService.Controllers
             return Ok(results);
         }
 
+        /// <summary>
+        /// Gets the movies by Genre
+        /// </summary>
+        /// <param name="genre">genre</param>
+        /// <returns>list of movies</returns>
         [HttpGet]
         [Route("movie/genre/{genre}")]
         public async Task<IActionResult> MoviesByGenre(string genre)

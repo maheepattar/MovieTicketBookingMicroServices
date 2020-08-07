@@ -30,8 +30,11 @@ namespace UserIdentityMicroService.Controllers
             this.appSettings = options.Value;
         }
 
-
-
+        /// <summary>
+        /// Authenticates User
+        /// </summary>
+        /// <param name="userInfo">user data</param>
+        /// <returns>User details with token</returns>
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public async Task<IActionResult> AuthenticateUser([FromBody] UserLoginDTO userInfo)
@@ -79,6 +82,11 @@ namespace UserIdentityMicroService.Controllers
             }
         }
 
+        /// <summary>
+        /// New user Registration
+        /// </summary>
+        /// <param name="userData">userData</param>
+        /// <returns>User Details</returns>
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserDTO userData)

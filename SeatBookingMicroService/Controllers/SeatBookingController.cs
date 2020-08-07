@@ -23,6 +23,13 @@ namespace SeatBookingMicroService.Controllers
             this.seatBookingRepository = _seatBookingRepository;
         }
 
+        /// <summary>
+        /// Gets the available seats for given moviea and date
+        /// </summary>
+        /// <param name="movieId">movieId</param>
+        /// <param name="date">date</param>
+        /// <returns>Available seats</returns>
+        [HttpGet]
         [Route("availableSeats")]
         public async Task<IActionResult> AvailableSeats(int movieId, string date)
         {
@@ -41,6 +48,11 @@ namespace SeatBookingMicroService.Controllers
             return Ok(availableSeats);
         }
 
+        /// <summary>
+        /// Book movie
+        /// </summary>
+        /// <param name="booking">booking</param>
+        /// <returns>Booking Details</returns>
         [HttpPost]
         [Route("book")]
         public async Task<IActionResult> BookMovie([FromBody] BookingDTO booking)
@@ -65,6 +77,11 @@ namespace SeatBookingMicroService.Controllers
 
         }
 
+        /// <summary>
+        /// Gets the booking details by Id
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <returns>Booked details</returns>
         [HttpGet]
         [Route("bookingDetails/{id}")]
         public async Task<IActionResult> BookingDetails(int id)

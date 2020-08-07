@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SeatBookingMicroService</name>
+    </assembly>
+    <members>
+        <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.AvailableSeats(System.Int32,System.String)">
+            <summary>
+            Gets the available seats for given moviea and date
+            </summary>
+            <param name="movieId">movieId</param>
+            <param name="date">date</param>
+            <returns>Available seats</returns>
+        </member>
+        <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.BookMovie(SeatBookingMicroService.DTO.BookingDTO)">
+            <summary>
+            Book movie
+            </summary>
+            <param name="booking">booking</param>
+            <returns>Booking Details</returns>
+        </member>
+        <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.BookingDetails(System.Int32)">
+            <summary>
+            Gets the booking details by Id
+            </summary>
+            <param name="id">Id</param>
+            <returns>Booked details</returns>
+        </member>
+        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingRepository.AvailableSeats(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Available seats for the movie
+            </summary>
+            <param name="bookedNumbers"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SeatBookingMicroService.DataProviders.SeatBookingRepository.GetBookings(System.Int32,System.String)">
+            <summary>
+            Gets the seats booked for the given movie and date
+            </summary>
+            <param name="movieId">movie id</param>
+            <param name="date">date</param>
+            <returns>Seats</returns>
+        </member>
+    </members>
+</doc>

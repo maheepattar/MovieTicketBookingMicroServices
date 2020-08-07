@@ -24,6 +24,11 @@ namespace MovieManagerMicroService.Controllers
             _movieRepository = movieRepository;
         }
 
+        /// <summary>
+        /// Add new movie
+        /// </summary>
+        /// <param name="movieInfo">movie object</param>
+        /// <returns>added movie details</returns>
         [HttpPost]
         [Route("addMovie")]
         public async Task<IActionResult> AddMovies([FromBody] MovieDTO movieInfo)

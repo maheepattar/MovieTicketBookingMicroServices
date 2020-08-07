@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UserIdentityMicroService</name>
+    </assembly>
+    <members>
+        <member name="M:UserIdentityMicroService.Controllers.AuthenticationController.AuthenticateUser(UserIdentityMicroService.UserLoginDTO)">
+            <summary>
+            Authenticates User
+            </summary>
+            <param name="userInfo">user data</param>
+            <returns>User details with token</returns>
+        </member>
+        <member name="M:UserIdentityMicroService.Controllers.AuthenticationController.Register(UserIdentityMicroService.DTO.UserDTO)">
+            <summary>
+            New user Registration
+            </summary>
+            <param name="userData">userData</param>
+            <returns>User Details</returns>
+        </member>
+    </members>
+</doc>
