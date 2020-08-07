@@ -34,11 +34,13 @@ namespace MovieManagerMicroService.Repository
         public async Task<int> AddMovies(MovieDTO movieDto)
         {
             // Check if there is already a show scheduled at the same time & location
-            Movie showExist = movieContext.Movies.Where(a => a.MultiplexId == movieDto.MultiplexId &&
-                                                        a.DateAndTime.Date == movieDto.DateAndTime.Date).FirstOrDefault();
+            List<Movie> movies = movieContext.Movies.Where(x => x.MultiplexId == movieDto.MultiplexId).ToList();
 
-            if (showExist != null)
-                throw new CustomException(Constants.MovieExist);
+            foreach (Movie item in movies)
+            {
+                if(item.DateAndTime.Date.ToShortDateString() == movieDto.DateAndTime.Date.ToShortDateString())
+                    throw new CustomException(Constants.MovieExist);
+            }
 
             Movie newMovie = new Movie
             {

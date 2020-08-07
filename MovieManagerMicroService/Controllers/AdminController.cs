@@ -17,7 +17,7 @@ namespace MovieManagerMicroService.Controllers
     /// Admin Controller
     /// </summary>
     [Route("api/[controller]")]
-    [Authorize(Roles = Role.Admin)]
+    // [Authorize(Roles = Role.Admin)]
     [ApiController]
     public class AdminController : ControllerBase
     {

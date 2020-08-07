@@ -75,6 +75,7 @@
             </summary>
             <param name="language">language</param>
             <response code="200">Success</response>
+            <response code="204">NoContent</response>
             <response code="401">Unauthorized</response>
             <response code="500">Internal Server Error</response>
             <returns>list of movies</returns>
@@ -85,6 +86,7 @@
             </summary>
             <param name="genre">genre</param>
             <response code="200">Success</response>
+            <response code="204">NoContent</response>
             <response code="401">Unauthorized</response>
             <response code="500">Internal Server Error</response>
             <returns>list of movies</returns>
