@@ -18,19 +18,19 @@ namespace MovieManagerMicroService.Controllers
     /// Movie Controller
     /// </summary>
     [Route("api/movie")]
-    [Authorize(Roles = Role.Customer)]
+    //[Authorize(Roles = Role.Customer)]
     [ApiController]
     public class MovieController : ControllerBase
     {
-        private readonly IMovieService _movieRepo;
+        private readonly IMovieService _movieService;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="movieRepository"></param>
-        public MovieController(IMovieService movieRepository)
+        public MovieController(IMovieService movieService)
         {
-            _movieRepo = movieRepository;
+            _movieService = movieService;
         }
 
         /// <summary>
@@ -42,11 +42,11 @@ namespace MovieManagerMicroService.Controllers
         /// <response code="500">Internal Server Error</response>
         /// <returns>Cities</returns>
         [HttpGet]
-        [Route("city")]
+        [Route(Routes.GetCities)]
         public async Task<IActionResult> Cities()
         {
             var results = new List<CityDTO>();
-            var cities = await _movieRepo.GetCities();
+            var cities = await _movieService.GetCities();
 
             if (cities == null || cities.Count() <= 0)
                 return NoContent();
@@ -73,7 +73,7 @@ namespace MovieManagerMicroService.Controllers
         /// <response code="500">Internal Server Error</response>
         /// <returns>list of multiplexes</returns>
         [HttpGet]
-        [Route("multiplex/{cityId}")]
+        [Route(Routes.MultiplexesByCity)]
         public async Task<IActionResult> MultiplexByCityId(int cityId)
         {
             if (cityId <= 0)
@@ -83,16 +83,18 @@ namespace MovieManagerMicroService.Controllers
 
             try
             {
-                var multiplexes = await _movieRepo.GetMultiplexesByCity(cityId);
+                var multiplexes = await _movieService.GetMultiplexesByCity(cityId);
 
                 if (multiplexes != null && multiplexes.Count() <= 0)
-                    return StatusCode(204, new { message = Constants.NoMultiplexes });
+                    return NoContent();
 
                 foreach (Multiplex multiplex in multiplexes)
                 {
                     results.Add(new MultiplexDTO
                     {
+                        Id = multiplex.Id,
                         MultiplexName = multiplex.MultiplexName,
+                        CityId = multiplex.CityId
 
                     });
                 }
@@ -114,7 +116,7 @@ namespace MovieManagerMicroService.Controllers
         /// <response code="500">Internal Server Error</response>
         /// <returns>list of Multiplex</returns>
         [HttpGet]
-        [Route("movie/multiplex/{multiplexId}")]
+        [Route(Routes.MoviesByMultiplex)]
         public async Task<IActionResult> MoviesByMultiplexId(int multiplexId)
         {
             if (multiplexId <= 0)
@@ -123,10 +125,10 @@ namespace MovieManagerMicroService.Controllers
             var results = new List<MovieDTO>();
             try
             {
-                var movies = await _movieRepo.GetMoviesByMultiplexId(multiplexId);
+                var movies = await _movieService.GetMoviesByMultiplexId(multiplexId);
 
                 if (movies != null && movies.Count() <= 0)
-                    return NotFound(new { message = Constants.NoMovies });
+                    return NoContent();
 
                 foreach (Movie movie in movies)
                 {
@@ -153,23 +155,24 @@ namespace MovieManagerMicroService.Controllers
         /// </summary>
         /// <param name="language">language</param>
         /// <response code="200">Success</response>
+        /// <response code="204">NoContent</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="500">Internal Server Error</response>
         /// <returns>list of movies</returns>
         [HttpGet]
-        [Route("movie/language/{language}")]
-        [EnableQuery()]
+        [Route(Routes.MoviesByLanguage)]
+        // [EnableQuery()]
         public async Task<IActionResult> MoviesByLanguage(string language)
         {
-            if (!string.IsNullOrWhiteSpace(language))
+            if (string.IsNullOrWhiteSpace(language))
                 return StatusCode(400, new { message = Constants.InvalidId("language") });
 
             var results = new List<MovieDTO>();
             try
             {
-                var movies = await _movieRepo.GetMoviesByLanguage(language);
+                var movies = await _movieService.GetMoviesByLanguage(language);
                 if (movies != null && movies.Count() <= 0)
-                    return NotFound(new { message = Constants.NoMoviesByLanguage });
+                    return NoContent();
 
                 foreach (Movie movie in movies)
                 {
@@ -196,23 +199,24 @@ namespace MovieManagerMicroService.Controllers
         /// </summary>
         /// <param name="genre">genre</param>
         /// <response code="200">Success</response>
+        /// <response code="204">NoContent</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="500">Internal Server Error</response>
         /// <returns>list of movies</returns>
-        [EnableQuery()]
+        //[EnableQuery()]
         [HttpGet]
-        [Route("movie/genre/{genre}")]
+        [Route(Routes.MoviesByGenre)]
         public async Task<IActionResult> MoviesByGenre(string genre)
         {
-            if (!string.IsNullOrWhiteSpace(genre))
+            if (string.IsNullOrWhiteSpace(genre))
                 return StatusCode(400, new { message = Constants.InvalidId("genre") });
             var results = new List<MovieDTO>();
 
             try
             {
-                var movies = await _movieRepo.GetMoviesByGenre(genre);
+                var movies = await _movieService.GetMoviesByGenre(genre);
                 if (movies != null && movies.Count() <= 0)
-                    return NotFound(new { message = Constants.NoMoviesByGenre });
+                    return NoContent();
 
                 foreach (Movie movie in movies)
                 {

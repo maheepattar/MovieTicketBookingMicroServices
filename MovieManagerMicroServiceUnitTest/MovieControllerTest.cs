@@ -17,9 +17,6 @@ namespace MovieManagerMicroServiceUnitTest
 {
     public class MovieControllerTest
     {
-        // private MovieService _movieService;
-        // private Mock<IMovieRepository> _movieRepositoryMock;
-
         private MovieController _movieController;
         private Mock<IMovieService> _movieServiceMock;
 

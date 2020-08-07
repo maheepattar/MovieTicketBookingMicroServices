@@ -262,5 +262,10 @@
             <param name="app">app</param>
             <param name="env">env</param>
         </member>
+        <member name="T:MovieManagerMicroService.Utilities.Routes">
+            <summary>
+            Defines routes
+            </summary>
+        </member>
     </members>
 </doc>
