@@ -2,6 +2,7 @@
 using MovieManagerMicroService.DataContext;
 using MovieManagerMicroService.DBEntities;
 using MovieManagerMicroService.DTO;
+using MovieManagerMicroService.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,12 +70,11 @@ namespace MovieManagerMicroService.ServiceProvider
         public async Task<int> AddMovies(MovieDTO movieDto)
         {
             // Check if there is already a show scheduled at the same time & location
-
             Movie showExist = _movieContext.Movies.Where(a => a.MultiplexId == movieDto.MultiplexId && 
                                                         a.DateAndTime.Date == movieDto.DateAndTime.Date).FirstOrDefault();
 
             if (showExist != null)
-                return 0;
+                throw new CustomException(Constants.MovieExist);
 
             Movie newMovie = new Movie
             {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -27,20 +29,24 @@ namespace MovieManagerMicroService.Controllers
         public async Task<IActionResult> AddMovies([FromBody] MovieDTO movieInfo)
         {
             if (movieInfo == null)
-                return BadRequest();
+                return StatusCode(400, new { message = Constants.MissingOrInvalidBody});
 
             if (!ModelState.IsValid)
-                return BadRequest();
+                return StatusCode(400, new { message = Constants.MissingOrInvalidBody });
 
-            int newId = await _movieRepository.AddMovies(movieInfo);
-
-            if (newId == 0)
-                return StatusCode(400, "Movie already added for the same time in the multiplex");
-
-            if (newId <= 0)
-                return StatusCode(500, "Error occured while adding movie. Try again.");
-
-            return Created("AddedMovie", new { id = newId });
+            try
+            {
+                int bookingResponse = await _movieRepository.AddMovies(movieInfo);
+                return Created("AddedMovie", new { id = bookingResponse, Name = movieInfo.Movie_Name, Language = movieInfo.MovieLanguage });
+            }
+            catch(CustomException ex)
+            {
+                return StatusCode(400, new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
     }
 }

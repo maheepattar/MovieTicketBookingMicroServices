@@ -31,16 +31,14 @@ namespace UserIdentityMicroService.DataProvides
         {
             this.userContext = _userCtx;
         }
+
         public async Task<UserDTO> Authenticate(string username, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-                return null;
-
             var user = await this.GetUser(username, password);
 
             // Not Authenticated
-            if (user == null) 
-                return null;
+            if (user == null)
+                throw new CustomException(Constants.WrongCredentials);
 
             // Authenticated
             var userDTO = new UserDTO()

@@ -11,13 +11,11 @@ namespace SeatBookingMicroService.Utilities
 
         public const string NoBookings = "No Bookings found for given id ";
 
-        public const string InvalidId = "Invalid or missing id.";
-
         public const string MaxBooking = "Maximum 5 seats are allowed in an single booking";
 
         public const string UnknownErrors = "Erro occured while your request. Try again.";
 
-        public static string NullObject(string objectName)
+        public static string InvalidInput(string objectName)
         { 
             return $"Invalid or missing {objectName}";
         }

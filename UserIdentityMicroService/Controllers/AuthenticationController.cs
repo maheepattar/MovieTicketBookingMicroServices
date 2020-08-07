@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,38 +30,53 @@ namespace UserIdentityMicroService.Controllers
             this.appSettings = options.Value;
         }
 
+
+
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public async Task<IActionResult> AuthenticateUser([FromBody] UserLoginDTO userInfo)
         {
-            var user = await userService.Authenticate(userInfo.Username, userInfo.Password);
+            if (userInfo == null)
+                return StatusCode(400, new { message = Constants.InvalidObject });
 
-            if (user == null)
-                return BadRequest(new { message = "Either Username or password is not correct" });
+            if (!ModelState.IsValid)
+                return StatusCode(400, new { message = Constants.InvalidObject });
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            try
             {
-                Subject = new ClaimsIdentity(new Claim[]
+                var user = await userService.Authenticate(userInfo.Username, userInfo.Password);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+                var tokenDescriptor = new SecurityTokenDescriptor
                 {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
                     new Claim(ClaimTypes.Name, user.Username.ToString()),
                     new Claim(ClaimTypes.Role, user.RoleId.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwtSecurityToken = tokenHandler.WriteToken(token);
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var jwtSecurityToken = tokenHandler.WriteToken(token);
 
-            return Ok(new
+                return Ok(new
+                {
+                    user.FirstName,
+                    user.Username,
+                    user.LastName,
+                    Token = jwtSecurityToken
+                });
+            }
+            catch(CustomException ex)
             {
-                user.FirstName,
-                user.Username,
-                user.LastName,
-                Token = jwtSecurityToken
-            });
+                return StatusCode(400, new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [AllowAnonymous]
@@ -68,17 +84,23 @@ namespace UserIdentityMicroService.Controllers
         public async Task<IActionResult> Register([FromBody] UserDTO userData)
         {
             if (userData == null)
-                return StatusCode(400, "User Data body is required.");
+                return StatusCode(400, new { message = Constants.InvalidObject});
+
+            if(!ModelState.IsValid)
+                return StatusCode(400, new { message = Constants.InvalidObject });
 
             try
             {
-                // create user
                 await userService.Create(userData, userData.Password);
                 return Ok();
             }
             catch (CustomException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(400, new { message = ex.Message });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
             }
         }
     }
