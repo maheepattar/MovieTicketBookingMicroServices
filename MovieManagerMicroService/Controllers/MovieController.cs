@@ -22,13 +22,13 @@ namespace MovieManagerMicroService.Controllers
     [ApiController]
     public class MovieController : ControllerBase
     {
-        private readonly IMovieRepository _movieRepo;
+        private readonly IMovieService _movieRepo;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="movieRepository"></param>
-        public MovieController(IMovieRepository movieRepository)
+        public MovieController(IMovieService movieRepository)
         {
             _movieRepo = movieRepository;
         }
@@ -37,6 +37,7 @@ namespace MovieManagerMicroService.Controllers
         /// Get all the cities
         /// </summary>
         /// <response code="200">Success</response>
+        /// <response code="204">NoContent</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="500">Internal Server Error</response>
         /// <returns>Cities</returns>
@@ -48,7 +49,7 @@ namespace MovieManagerMicroService.Controllers
             var cities = await _movieRepo.GetCities();
 
             if (cities == null || cities.Count() <= 0)
-                return BadRequest(new { message =  Constants.NoCities});
+                return NoContent();
 
             foreach (City city in cities)
             {
@@ -67,12 +68,13 @@ namespace MovieManagerMicroService.Controllers
         /// </summary>
         /// <param name="cityId">cityId</param>
         /// <response code="200">Success</response>
+        /// <response code="204">NoContent</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="500">Internal Server Error</response>
         /// <returns>list of multiplexes</returns>
         [HttpGet]
         [Route("multiplex/{cityId}")]
-        public async Task<IActionResult> Multiplex(int cityId)
+        public async Task<IActionResult> MultiplexByCityId(int cityId)
         {
             if (cityId <= 0)
                 return StatusCode(400, new { message = Constants.InvalidId("cityId") });
@@ -81,10 +83,10 @@ namespace MovieManagerMicroService.Controllers
 
             try
             {
-                var multiplexes = await _movieRepo.GetMultiplexes(cityId);
+                var multiplexes = await _movieRepo.GetMultiplexesByCity(cityId);
 
                 if (multiplexes != null && multiplexes.Count() <= 0)
-                    return NotFound(new { message = Constants.NoMultiplexes });
+                    return StatusCode(204, new { message = Constants.NoMultiplexes });
 
                 foreach (Multiplex multiplex in multiplexes)
                 {
@@ -113,7 +115,7 @@ namespace MovieManagerMicroService.Controllers
         /// <returns>list of Multiplex</returns>
         [HttpGet]
         [Route("movie/multiplex/{multiplexId}")]
-        public async Task<IActionResult> Movies(int multiplexId)
+        public async Task<IActionResult> MoviesByMultiplexId(int multiplexId)
         {
             if (multiplexId <= 0)
                 return StatusCode(400, new { message = Constants.InvalidId("multiplexId") });
@@ -121,7 +123,7 @@ namespace MovieManagerMicroService.Controllers
             var results = new List<MovieDTO>();
             try
             {
-                var movies = await _movieRepo.GetMovies(multiplexId);
+                var movies = await _movieRepo.GetMoviesByMultiplexId(multiplexId);
 
                 if (movies != null && movies.Count() <= 0)
                     return NotFound(new { message = Constants.NoMovies });
@@ -157,7 +159,7 @@ namespace MovieManagerMicroService.Controllers
         [HttpGet]
         [Route("movie/language/{language}")]
         [EnableQuery()]
-        public async Task<IActionResult> Movies(string language)
+        public async Task<IActionResult> MoviesByLanguage(string language)
         {
             if (!string.IsNullOrWhiteSpace(language))
                 return StatusCode(400, new { message = Constants.InvalidId("language") });
@@ -165,7 +167,7 @@ namespace MovieManagerMicroService.Controllers
             var results = new List<MovieDTO>();
             try
             {
-                var movies = await _movieRepo.GetMovies(language);
+                var movies = await _movieRepo.GetMoviesByLanguage(language);
                 if (movies != null && movies.Count() <= 0)
                     return NotFound(new { message = Constants.NoMoviesByLanguage });
 

@@ -19,6 +19,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MovieManagerMicroService.DataContext;
+using MovieManagerMicroService.Repository;
 using MovieManagerMicroService.ServiceProvider;
 using MovieManagerMicroService.Utilities;
 
@@ -87,7 +88,9 @@ namespace MovieManagerMicroService
                 };
             });
 
-            services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddTransient<IMovieService, MovieService>();
+            services.AddTransient<IMovieRepository, MovieRepository>();
+
             services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Movie Manager MicroService", Version = "v1" });
@@ -96,6 +99,7 @@ namespace MovieManagerMicroService
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 opt.IncludeXmlComments(xmlPath);
             });
+
             // services.AddOData();
         }
 

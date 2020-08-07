@@ -21,13 +21,13 @@ namespace MovieManagerMicroService.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly IMovieRepository _movieRepository;
+        private readonly IMovieService _movieRepository;
         
         /// <summary>
         /// Ctor - Admin Controller
         /// </summary>
         /// <param name="movieRepository"></param>
-        public AdminController(IMovieRepository movieRepository)
+        public AdminController(IMovieService movieRepository)
         {
             _movieRepository = movieRepository;
         }

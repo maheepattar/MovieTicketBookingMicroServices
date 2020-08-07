@@ -4,38 +4,79 @@
         <name>MovieManagerMicroService</name>
     </assembly>
     <members>
+        <member name="T:MovieManagerMicroService.Controllers.AdminController">
+            <summary>
+            Admin Controller
+            </summary>
+        </member>
+        <member name="M:MovieManagerMicroService.Controllers.AdminController.#ctor(MovieManagerMicroService.ServiceProvider.IMovieService)">
+            <summary>
+            Ctor - Admin Controller
+            </summary>
+            <param name="movieRepository"></param>
+        </member>
         <member name="M:MovieManagerMicroService.Controllers.AdminController.AddMovies(MovieManagerMicroService.DTO.MovieDTO)">
             <summary>
             Add new movie
             </summary>
             <param name="movieInfo">movie object</param>
+            <response code="200">Success</response>
+            <response code="201">Created</response>
+            <response code="204">No COntent</response>
+            <response code="401">Unauthorized</response>
+            <response code="500">Internal Server Error</response>
             <returns>added movie details</returns>
+        </member>
+        <member name="T:MovieManagerMicroService.Controllers.MovieController">
+            <summary>
+            Movie Controller
+            </summary>
+        </member>
+        <member name="M:MovieManagerMicroService.Controllers.MovieController.#ctor(MovieManagerMicroService.ServiceProvider.IMovieService)">
+            <summary>
+            
+            </summary>
+            <param name="movieRepository"></param>
         </member>
         <member name="M:MovieManagerMicroService.Controllers.MovieController.Cities">
             <summary>
             Get all the cities
             </summary>
+            <response code="200">Success</response>
+            <response code="204">NoContent</response>
+            <response code="401">Unauthorized</response>
+            <response code="500">Internal Server Error</response>
             <returns>Cities</returns>
         </member>
-        <member name="M:MovieManagerMicroService.Controllers.MovieController.Multiplex(System.Int32)">
+        <member name="M:MovieManagerMicroService.Controllers.MovieController.MultiplexByCityId(System.Int32)">
             <summary>
             Get all multiplexes belongs the city
             </summary>
             <param name="cityId">cityId</param>
+            <response code="200">Success</response>
+            <response code="204">NoContent</response>
+            <response code="401">Unauthorized</response>
+            <response code="500">Internal Server Error</response>
             <returns>list of multiplexes</returns>
         </member>
-        <member name="M:MovieManagerMicroService.Controllers.MovieController.Movies(System.Int32)">
+        <member name="M:MovieManagerMicroService.Controllers.MovieController.MoviesByMultiplexId(System.Int32)">
             <summary>
             Gets all movies are running in the given multiplex
             </summary>
             <param name="multiplexId">multiplexId</param>
+            <response code="200">Success</response>
+            <response code="401">Unauthorized</response>
+            <response code="500">Internal Server Error</response>
             <returns>list of Multiplex</returns>
         </member>
-        <member name="M:MovieManagerMicroService.Controllers.MovieController.Movies(System.String)">
+        <member name="M:MovieManagerMicroService.Controllers.MovieController.MoviesByLanguage(System.String)">
             <summary>
             Gets the movies by language
             </summary>
             <param name="language">language</param>
+            <response code="200">Success</response>
+            <response code="401">Unauthorized</response>
+            <response code="500">Internal Server Error</response>
             <returns>list of movies</returns>
         </member>
         <member name="M:MovieManagerMicroService.Controllers.MovieController.MoviesByGenre(System.String)">
@@ -43,41 +84,153 @@
             Gets the movies by Genre
             </summary>
             <param name="genre">genre</param>
+            <response code="200">Success</response>
+            <response code="401">Unauthorized</response>
+            <response code="500">Internal Server Error</response>
             <returns>list of movies</returns>
         </member>
-        <member name="M:MovieManagerMicroService.ServiceProvider.MovieRepository.GetCities">
+        <member name="T:MovieManagerMicroService.ServiceProvider.MovieService">
+            <summary>
+            Movie Service
+            </summary>
+        </member>
+        <member name="M:MovieManagerMicroService.ServiceProvider.MovieService.#ctor(MovieManagerMicroService.Repository.IMovieRepository)">
+            <summary>
+            Ctor - Movie Service
+            </summary>
+            <param name="movieRepository">movieRepository</param>
+        </member>
+        <member name="M:MovieManagerMicroService.ServiceProvider.MovieService.GetCities">
             <summary>
             Get a list of all cities
             </summary>
             <returns></returns>
         </member>
-        <member name="M:MovieManagerMicroService.ServiceProvider.MovieRepository.GetMultiplexes(System.Int32)">
+        <member name="M:MovieManagerMicroService.ServiceProvider.MovieService.GetMultiplexesByCity(System.Int32)">
             <summary>
             Get a list of multiplexes based on selected city
             </summary>
             <param name="cityId"></param>
             <returns></returns>
         </member>
-        <member name="M:MovieManagerMicroService.ServiceProvider.MovieRepository.GetMovies(System.Int32)">
+        <member name="M:MovieManagerMicroService.ServiceProvider.MovieService.GetMoviesByMultiplexId(System.Int32)">
             <summary>
             Get a list of movies based on selected multiplex
             </summary>
             <param name="multiplexId"></param>
             <returns></returns>
         </member>
-        <member name="M:MovieManagerMicroService.ServiceProvider.MovieRepository.GetMovies(System.String)">
+        <member name="M:MovieManagerMicroService.ServiceProvider.MovieService.GetMoviesByLanguage(System.String)">
             <summary>
             Get a list of movies based on selected language
             </summary>
             <param name="language"></param>
             <returns></returns>
         </member>
-        <member name="M:MovieManagerMicroService.ServiceProvider.MovieRepository.GetMoviesByGenre(System.String)">
+        <member name="M:MovieManagerMicroService.ServiceProvider.MovieService.GetMoviesByGenre(System.String)">
             <summary>
-            Get the movie detail for a movie
+            Get the moviea details by Genre
             </summary>
-            <param name="movieId"></param>
+            <param name="genre">genre</param>
             <returns></returns>
+        </member>
+        <member name="M:MovieManagerMicroService.ServiceProvider.MovieService.AddMovies(MovieManagerMicroService.DTO.MovieDTO)">
+            <summary>
+            Adds the moview
+            </summary>
+            <param name="movieDto">movieDto</param>
+            <returns></returns>
+        </member>
+        <member name="T:MovieManagerMicroService.Repository.IMovieRepository">
+            <summary>
+            Movie Repository
+            </summary>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.IMovieRepository.GetCities">
+            <summary>
+            Gets the cities
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.IMovieRepository.GetMultiplexes(System.Int32)">
+            <summary>
+            Gets Multiplexes by city id
+            </summary>
+            <param name="cityId"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:MovieManagerMicroService.Repository.IMovieRepository.GetMovies(System.Int32)" -->
+        <member name="M:MovieManagerMicroService.Repository.IMovieRepository.GetMoviesByLanguage(System.String)">
+            <summary>
+            Gets the movies by Language
+            </summary>
+            <param name="language">language</param>
+            <returns>Movies</returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.IMovieRepository.AddMovies(MovieManagerMicroService.DTO.MovieDTO)">
+            <summary>
+            Adds Movies
+            </summary>
+            <param name="movieDto">movieDto</param>
+            <returns>Integer value</returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.IMovieRepository.GetMoviesByGenre(System.String)">
+            <summary>
+            Gets the movies by genre
+            </summary>
+            <param name="genre">genre</param>
+            <returns>Movies</returns>
+        </member>
+        <member name="T:MovieManagerMicroService.Repository.MovieRepository">
+            <summary>
+            Movie Context
+            </summary>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.MovieRepository.#ctor(MovieManagerMicroService.DataContext.MovieContext)">
+            <summary>
+            Ctor - Movie Conext
+            </summary>
+            <param name="movieContext"></param>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.MovieRepository.AddMovies(MovieManagerMicroService.DTO.MovieDTO)">
+            <summary>
+            Adds Movies
+            </summary>
+            <param name="movieDto">movieDto</param>
+            <returns>Integer value</returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.MovieRepository.GetCities">
+            <summary>
+            Gets the cities
+            </summary>
+            <returns>Cities</returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.MovieRepository.GetMovies(System.Int32)">
+            <summary>
+            Gets the movies by multiplex id
+            </summary>
+            <returns>Movies</returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.MovieRepository.GetMoviesByLanguage(System.String)">
+            <summary>
+            Gets the movies by Language
+            </summary>
+            <param name="language">language</param>
+            <returns>Movies</returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.MovieRepository.GetMoviesByGenre(System.String)">
+            <summary>
+            Gets the movies by genre
+            </summary>
+            <param name="genre">genre</param>
+            <returns>Movies</returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.MovieRepository.GetMultiplexes(System.Int32)">
+            <summary>
+            Gets the multiplexes by city id
+            </summary>
+            <param name="cityId">cityId</param>
+            <returns>Multiplexes</returns>
         </member>
         <member name="T:MovieManagerMicroService.Startup">
             <summary>

@@ -4,11 +4,26 @@
         <name>UserIdentityMicroService</name>
     </assembly>
     <members>
+        <member name="T:UserIdentityMicroService.Controllers.AuthenticationController">
+            <summary>
+            Authentication Controller
+            </summary>
+        </member>
+        <member name="M:UserIdentityMicroService.Controllers.AuthenticationController.#ctor(UserIdentityMicroService.DataProvides.IUserService,Microsoft.Extensions.Options.IOptions{UserIdentityMicroService.Utilities.AppSettings})">
+            <summary>
+            Ctor
+            </summary>
+            <param name="_userService"></param>
+            <param name="options"></param>
+        </member>
         <member name="M:UserIdentityMicroService.Controllers.AuthenticationController.AuthenticateUser(UserIdentityMicroService.UserLoginDTO)">
             <summary>
             Authenticates User
             </summary>
             <param name="userInfo">user data</param>
+            <response code="200">Success</response>
+            <response code="400">Bad Request</response>
+            <response code="500">Internal Server Error</response>
             <returns>User details with token</returns>
         </member>
         <member name="M:UserIdentityMicroService.Controllers.AuthenticationController.Register(UserIdentityMicroService.DTO.UserDTO)">
@@ -16,6 +31,9 @@
             New user Registration
             </summary>
             <param name="userData">userData</param>
+            <response code="201">Created</response>
+            <response code="400">Bad Request</response>
+            <response code="500">Internal Server Error</response>
             <returns>User Details</returns>
         </member>
     </members>

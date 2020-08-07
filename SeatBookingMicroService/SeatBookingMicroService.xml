@@ -4,12 +4,26 @@
         <name>SeatBookingMicroService</name>
     </assembly>
     <members>
+        <member name="T:SeatBookingMicroService.Controllers.SeatBookingController">
+            <summary>
+            Seat Booking Controller
+            </summary>
+        </member>
+        <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.#ctor(SeatBookingMicroService.DataProviders.ISeatBookingRepository)">
+            <summary>
+            Ctor - Seat Booking Controller
+            </summary>
+            <param name="_seatBookingRepository"></param>
+        </member>
         <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.AvailableSeats(System.Int32,System.String)">
             <summary>
             Gets the available seats for given moviea and date
             </summary>
             <param name="movieId">movieId</param>
             <param name="date">date</param>
+            <response code="200">Success</response>
+            <response code="401">Unauthorized</response>
+            <response code="500">Internal Server Error</response>
             <returns>Available seats</returns>
         </member>
         <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.BookMovie(SeatBookingMicroService.DTO.BookingDTO)">
@@ -17,6 +31,10 @@
             Book movie
             </summary>
             <param name="booking">booking</param>
+            <response code="200">Success</response>
+            <response code="201">Created</response>
+            <response code="401">Unauthorized</response>
+            <response code="500">Internal Server Error</response>
             <returns>Booking Details</returns>
         </member>
         <member name="M:SeatBookingMicroService.Controllers.SeatBookingController.BookingDetails(System.Int32)">
@@ -24,6 +42,9 @@
             Gets the booking details by Id
             </summary>
             <param name="id">Id</param>
+            <response code="200">Success</response>
+            <response code="401">Unauthorized</response>
+            <response code="500">Internal Server Error</response>
             <returns>Booked details</returns>
         </member>
         <member name="M:SeatBookingMicroService.DataProviders.SeatBookingRepository.AvailableSeats(System.Collections.Generic.List{System.Int32})">
