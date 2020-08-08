@@ -7,7 +7,8 @@ namespace UserIdentityMicroService.Utilities
 {
     public class AppSettings
     {
-        public string Secret => "secret key for movie ticket booking application";
+        public const string Secret = "secret key for movie ticket booking application";
+
         public string ConnectionStrings { get; set; }
     }
 }

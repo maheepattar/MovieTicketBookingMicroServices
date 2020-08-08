@@ -54,7 +54,7 @@ namespace UserIdentityMicroService
             var appSettings = appSettingsSection.Get<AppSettings>();
             var connectionString = appSettings.ConnectionStrings;
             services.AddDbContext<UserContext>(o => o.UseSqlServer(connectionString));
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(AppSettings.Secret);
             
             services.AddAuthentication(x =>
             {

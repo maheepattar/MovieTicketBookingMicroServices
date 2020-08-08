@@ -9,7 +9,7 @@
             Authentication Controller
             </summary>
         </member>
-        <member name="M:UserIdentityMicroService.Controllers.AuthenticationController.#ctor(UserIdentityMicroService.DataProvides.IUserService,Microsoft.Extensions.Options.IOptions{UserIdentityMicroService.Utilities.AppSettings})">
+        <member name="M:UserIdentityMicroService.Controllers.AuthenticationController.#ctor(UserIdentityMicroService.DataProvides.IUserService)">
             <summary>
             Ctor
             </summary>

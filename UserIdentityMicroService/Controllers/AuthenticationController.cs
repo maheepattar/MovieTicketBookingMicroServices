@@ -24,7 +24,7 @@ namespace UserIdentityMicroService.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly AppSettings appSettings;
+        // private readonly AppSettings appSettings;
         private readonly IUserService userService;
         
         /// <summary>
@@ -32,10 +32,10 @@ namespace UserIdentityMicroService.Controllers
         /// </summary>
         /// <param name="_userService"></param>
         /// <param name="options"></param>
-        public AuthenticationController(IUserService _userService, IOptions<AppSettings> options)
+        public AuthenticationController(IUserService _userService)
         {
             this.userService = _userService;
-            this.appSettings = options.Value;
+            // this.appSettings = options.Value;
         }
 
         /// <summary>
@@ -59,8 +59,11 @@ namespace UserIdentityMicroService.Controllers
             try
             {
                 var user = await userService.Authenticate(userInfo.Username, userInfo.Password);
+                if (user == null)
+                    return StatusCode(400, new { message = Constants.WrongCredentials });
+
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+                var key = Encoding.ASCII.GetBytes(AppSettings.Secret);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
