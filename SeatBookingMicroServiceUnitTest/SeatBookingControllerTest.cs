@@ -65,7 +65,7 @@ namespace SeatBookingMicroServiceUnitTest
         }
 
         [Test]
-        public async Task WhenSeats_MoreThanFive_Returns_BadRequest()
+        public async Task WhenBookingSeats_MoreThanFive_Returns_BadRequest()
         {
             // Arrange
             BookingDTO bookingDTO = new BookingDTO()
@@ -79,6 +79,24 @@ namespace SeatBookingMicroServiceUnitTest
             // Assert
             Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
             Assert.IsNotNull(result.Value);
+        }
+
+        [Test]
+        public async Task WhenBookingSeats_LessOrEqualsToFive_AddNewMovie()
+        {
+            // Arrange
+            BookingDTO bookingDTO = new BookingDTO()
+            {
+                SeatNo = "1,2,3,4,5"
+            };
+
+            seatBookingServiceMock.Setup(a => a.BookMovie(bookingDTO)).ReturnsAsync(10);
+
+            // Act
+            var result = (CreatedResult)await seatBookingController.BookMovie(bookingDTO);
+
+            // Assert
+            Assert.AreEqual((int)HttpStatusCode.Created, result.StatusCode);
         }
     }
 }
