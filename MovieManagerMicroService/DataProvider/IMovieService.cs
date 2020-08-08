@@ -15,7 +15,7 @@ namespace MovieManagerMicroService.ServiceProvider
 
         Task<List<Movie>> GetMoviesByMultiplexId(int multiplexId);
 
-        Task<List<Movie>> GetMoviesByLanguage(string language);
+        Task<List<MovieDTO>> GetMoviesByLanguage(string language);
 
         Task<int> AddMovies(MovieDTO movieDto);
 

@@ -8,6 +8,7 @@ namespace MovieManagerMicroService.DTO
 {
     public class MovieDTO
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]

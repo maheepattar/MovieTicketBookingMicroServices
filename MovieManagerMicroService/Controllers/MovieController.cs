@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ namespace MovieManagerMicroService.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="movieRepository"></param>
+        /// <param name="movieService">movieService</param>
         public MovieController(IMovieService movieService)
         {
             _movieService = movieService;
@@ -161,7 +162,8 @@ namespace MovieManagerMicroService.Controllers
         /// <returns>list of movies</returns>
         [HttpGet]
         [Route(Routes.MoviesByLanguage)]
-        // [EnableQuery()]
+        [EnableQuery()]
+        [ODataRoute("MoviesByLanguage(language={language})()")]
         public async Task<IActionResult> MoviesByLanguage(string language)
         {
             if (string.IsNullOrWhiteSpace(language))
@@ -172,20 +174,8 @@ namespace MovieManagerMicroService.Controllers
             {
                 var movies = await _movieService.GetMoviesByLanguage(language);
                 if (movies != null && movies.Count() <= 0)
-                    return NoContent();
+                    return NoContent();                
 
-                foreach (Movie movie in movies)
-                {
-                    results.Add(new MovieDTO
-                    {
-                        Movie_Name = movie.Movie_Name,
-                        DateAndTime = movie.DateAndTime,
-                        MovieLanguage = movie.MovieLanguage,
-                        Movie_Description = movie.Movie_Description,
-                        Genre = movie.Genre
-
-                    });
-                }
                 return Ok(results);
             }
             catch (Exception ex)
@@ -203,7 +193,7 @@ namespace MovieManagerMicroService.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="500">Internal Server Error</response>
         /// <returns>list of movies</returns>
-        //[EnableQuery()]
+        [EnableQuery()]
         [HttpGet]
         [Route(Routes.MoviesByGenre)]
         public async Task<IActionResult> MoviesByGenre(string genre)

@@ -61,9 +61,24 @@ namespace MovieManagerMicroService.ServiceProvider
         /// </summary>
         /// <param name="language"></param>
         /// <returns></returns>
-        public async Task<List<Movie>> GetMoviesByLanguage(string language)
+        public async Task<List<MovieDTO>> GetMoviesByLanguage(string language)
         {
-            return await _movieRepository.GetMoviesByLanguage(language);
+            var results = new List<MovieDTO>();
+            var movies = await _movieRepository.GetMoviesByLanguage(language);
+            foreach (Movie movie in movies)
+            {
+                results.Add(new MovieDTO
+                {
+                    Movie_Name = movie.Movie_Name,
+                    DateAndTime = movie.DateAndTime,
+                    MovieLanguage = movie.MovieLanguage,
+                    Movie_Description = movie.Movie_Description,
+                    Genre = movie.Genre
+
+                });
+            }
+
+            return results;
         }
 
         /// <summary>

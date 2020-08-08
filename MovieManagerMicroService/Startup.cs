@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -18,7 +19,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OData.Edm;
 using MovieManagerMicroService.DataContext;
+using MovieManagerMicroService.DBEntities;
+using MovieManagerMicroService.DTO;
 using MovieManagerMicroService.Repository;
 using MovieManagerMicroService.ServiceProvider;
 using MovieManagerMicroService.Utilities;
@@ -59,8 +63,8 @@ namespace MovieManagerMicroService
         /// <param name="services">services</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-            services.AddCors();
+            services.AddControllers(mvc => mvc.EnableEndpointRouting = false);
+
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
@@ -91,6 +95,7 @@ namespace MovieManagerMicroService
             services.AddTransient<IMovieService, MovieService>();
             services.AddTransient<IMovieRepository, MovieRepository>();
 
+            // services.AddOData();
             services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Movie Manager MicroService", Version = "v1" });
@@ -99,8 +104,6 @@ namespace MovieManagerMicroService
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 opt.IncludeXmlComments(xmlPath);
             });
-
-            // services.AddOData();
         }
 
         /// <summary>
@@ -110,10 +113,22 @@ namespace MovieManagerMicroService
         /// <param name="env">env</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //IEdmModel model = EdmModelBuilder.Build();
+            //app.UseOData(model);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //app.UseMvc(routeBuilder =>
+            //{
+            //    routeBuilder.Expand().Select().Filter().Count().OrderBy();
+            //    routeBuilder.MapODataServiceRoute("odata", "odata", model);
+            //    routeBuilder.MapRoute(
+            //      name: "Default",
+            //      template: "{controller=Home}/{action=Index}/{id?}");
+            //});
 
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
@@ -123,13 +138,7 @@ namespace MovieManagerMicroService
                 option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
             });
 
-            app.UseHttpsRedirection();
-
-            //app.UseMvc(routeBuilder =>
-            //{
-            //    routeBuilder.EnableDependencyInjection();
-            //    routeBuilder.Expand().Select().Filter().Count().OrderBy();
-            //});
+            
 
             app.UseRouting();
             app.UseAuthorization();
