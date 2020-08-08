@@ -46,7 +46,8 @@ namespace UserIdentityMicroService.DataProvides
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 RoleId = user.RoleId,
-                Username = user.Username
+                Username = user.Username,
+                Password = user.Password
             };
 
             return userDTO;
@@ -72,7 +73,6 @@ namespace UserIdentityMicroService.DataProvides
 
             await userContext.Users.AddAsync(userData);
             await userContext.SaveChangesAsync();
-
             return user;
         }
 

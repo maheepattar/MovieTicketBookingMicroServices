@@ -36,5 +36,24 @@
             <response code="500">Internal Server Error</response>
             <returns>User Details</returns>
         </member>
+        <member name="T:UserIdentityMicroService.Utilities.CommonMethods">
+            <summary>
+            Common methods
+            </summary>
+        </member>
+        <member name="M:UserIdentityMicroService.Utilities.CommonMethods.EncryptText(System.String)">
+            <summary>
+            Encrypt Password
+            </summary>
+            <param name="password">password</param>
+            <returns>Encr. Pw. </returns>
+        </member>
+        <member name="M:UserIdentityMicroService.Utilities.CommonMethods.DecryptText(System.String)">
+            <summary>
+            Decryot Password
+            </summary>
+            <param name="base64String">base64 encoded bytes</param>
+            <returns>Dec. Pw. </returns>
+        </member>
     </members>
 </doc>

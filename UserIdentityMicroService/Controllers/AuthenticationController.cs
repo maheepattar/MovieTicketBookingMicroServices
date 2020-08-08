@@ -58,18 +58,20 @@ namespace UserIdentityMicroService.Controllers
 
             try
             {
+                userInfo.Password = CommonMethods.EncryptText(userInfo.Password);
                 var user = await userService.Authenticate(userInfo.Username, userInfo.Password);
                 if (user == null)
                     return StatusCode(400, new { message = Constants.WrongCredentials });
 
+                string userRole = Enum.GetName(typeof(Roles), user.RoleId);
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(AppSettings.Secret);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                    new Claim(ClaimTypes.Name, user.Username.ToString()),
-                    new Claim(ClaimTypes.Role, user.RoleId.ToString())
+                        new Claim(ClaimTypes.Name, user.Username.ToString()),
+                        new Claim(ClaimTypes.Role, userRole)
                     }),
                     Expires = DateTime.UtcNow.AddDays(7),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -116,6 +118,7 @@ namespace UserIdentityMicroService.Controllers
 
             try
             {
+                userData.Password = CommonMethods.EncryptText(userData.Password);
                 await userService.Create(userData, userData.Password);
                 return Created("Registered", new { 
                     Username = userData.Username

@@ -15,7 +15,7 @@ namespace SeatBookingMicroService.Controllers
     /// Seat Booking Controller
     /// </summary>
     [Route("api/[controller]")]
-    // [Authorize(Roles = Role.Customer)]
+    [Authorize(Roles = Role.Customer)]
     [ApiController]
     public class SeatBookingController : ControllerBase
     {
