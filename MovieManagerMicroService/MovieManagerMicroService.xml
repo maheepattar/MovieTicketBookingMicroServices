@@ -143,6 +143,21 @@
             <param name="movieDto">movieDto</param>
             <returns></returns>
         </member>
+        <member name="T:MovieManagerMicroService.DTO.CityDTO">
+            <summary>
+            City DTO
+            </summary>
+        </member>
+        <member name="P:MovieManagerMicroService.DTO.CityDTO.CityId">
+            <summary>
+            Gets or sets City id
+            </summary>
+        </member>
+        <member name="P:MovieManagerMicroService.DTO.CityDTO.CityName">
+            <summary>
+            Gets or sets City name
+            </summary>
+        </member>
         <member name="T:MovieManagerMicroService.Repository.IMovieRepository">
             <summary>
             Movie Repository
