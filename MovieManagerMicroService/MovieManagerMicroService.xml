@@ -13,7 +13,7 @@
             <summary>
             Ctor - Admin Controller
             </summary>
-            <param name="movieRepository"></param>
+            <param name="movieService">movieService</param>
         </member>
         <member name="M:MovieManagerMicroService.Controllers.AdminController.AddMovies(MovieManagerMicroService.DTO.MovieDTO)">
             <summary>
@@ -169,7 +169,7 @@
             <param name="language">language</param>
             <returns>Movies</returns>
         </member>
-        <member name="M:MovieManagerMicroService.Repository.IMovieRepository.AddMovies(MovieManagerMicroService.DTO.MovieDTO)">
+        <member name="M:MovieManagerMicroService.Repository.IMovieRepository.AddMovies(MovieManagerMicroService.DBEntities.Movie)">
             <summary>
             Adds Movies
             </summary>
@@ -194,11 +194,11 @@
             </summary>
             <param name="movieContext"></param>
         </member>
-        <member name="M:MovieManagerMicroService.Repository.MovieRepository.AddMovies(MovieManagerMicroService.DTO.MovieDTO)">
+        <member name="M:MovieManagerMicroService.Repository.MovieRepository.AddMovies(MovieManagerMicroService.DBEntities.Movie)">
             <summary>
             Adds Movies
             </summary>
-            <param name="movieDto">movieDto</param>
+            <param name="movie">movie</param>
             <returns>Integer value</returns>
         </member>
         <member name="M:MovieManagerMicroService.Repository.MovieRepository.GetCities">

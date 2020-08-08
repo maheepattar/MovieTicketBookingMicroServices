@@ -21,15 +21,15 @@ namespace MovieManagerMicroService.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly IMovieService _movieRepository;
-        
+        private readonly IMovieService _movieService;
+
         /// <summary>
         /// Ctor - Admin Controller
         /// </summary>
-        /// <param name="movieRepository"></param>
-        public AdminController(IMovieService movieRepository)
+        /// <param name="movieService">movieService</param>
+        public AdminController(IMovieService movieService)
         {
-            _movieRepository = movieRepository;
+            _movieService = movieService;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace MovieManagerMicroService.Controllers
 
             try
             {
-                int bookingResponse = await _movieRepository.AddMovies(movieInfo);
+                int bookingResponse = await _movieService.AddMovies(movieInfo);
                 return Created("AddedMovie", new { id = bookingResponse, Name = movieInfo.Movie_Name, Language = movieInfo.MovieLanguage });
             }
             catch(CustomException ex)

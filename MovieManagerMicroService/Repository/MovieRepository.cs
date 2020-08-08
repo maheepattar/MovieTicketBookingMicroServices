@@ -29,33 +29,13 @@ namespace MovieManagerMicroService.Repository
         /// <summary>
         /// Adds Movies
         /// </summary>
-        /// <param name="movieDto">movieDto</param>
+        /// <param name="movie">movie</param>
         /// <returns>Integer value</returns>
-        public async Task<int> AddMovies(MovieDTO movieDto)
+        public async Task<int> AddMovies(Movie movie)
         {
-            // Check if there is already a show scheduled at the same time & location
-            List<Movie> movies = movieContext.Movies.Where(x => x.MultiplexId == movieDto.MultiplexId).ToList();
-
-            foreach (Movie item in movies)
-            {
-                if(item.DateAndTime.Date.ToShortDateString() == movieDto.DateAndTime.Date.ToShortDateString())
-                    throw new CustomException(Constants.MovieExist);
-            }
-
-            Movie newMovie = new Movie
-            {
-                Movie_Name = movieDto.Movie_Name,
-                MovieLanguage = movieDto.MovieLanguage,
-                Movie_Description = movieDto.Movie_Description,
-                DateAndTime = Convert.ToDateTime(movieDto.DateAndTime),
-                MultiplexId = movieDto.MultiplexId,
-                Genre = movieDto.Genre
-
-            };
-
-            await movieContext.Movies.AddAsync(newMovie);
+            await movieContext.Movies.AddAsync(movie);
             await movieContext.SaveChangesAsync();
-            return newMovie.Id;
+            return movie.Id;
         }
 
         /// <summary>

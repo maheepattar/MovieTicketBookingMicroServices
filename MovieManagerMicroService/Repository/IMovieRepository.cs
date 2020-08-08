@@ -44,7 +44,7 @@ namespace MovieManagerMicroService.Repository
         /// </summary>
         /// <param name="movieDto">movieDto</param>
         /// <returns>Integer value</returns>
-        Task<int> AddMovies(MovieDTO movieDto);
+        Task<int> AddMovies(Movie movie);
 
         /// <summary>
         /// Gets the movies by genre

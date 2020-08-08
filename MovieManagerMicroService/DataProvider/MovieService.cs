@@ -83,7 +83,27 @@ namespace MovieManagerMicroService.ServiceProvider
         /// <returns></returns>
         public async Task<int> AddMovies(MovieDTO movieDto)
         {
-            return await _movieRepository.AddMovies(movieDto);
+            // Check if there is already a show scheduled at the same time & location
+            List<Movie> movies = await this.GetMoviesByMultiplexId(movieDto.MultiplexId);
+
+            foreach (Movie item in movies)
+            {
+                if (item.DateAndTime.Date.ToShortDateString() == movieDto.DateAndTime.Date.ToShortDateString())
+                    throw new CustomException(Constants.MovieExist);
+            }
+
+            Movie newMovie = new Movie
+            {
+                Movie_Name = movieDto.Movie_Name,
+                MovieLanguage = movieDto.MovieLanguage,
+                Movie_Description = movieDto.Movie_Description,
+                DateAndTime = Convert.ToDateTime(movieDto.DateAndTime),
+                MultiplexId = movieDto.MultiplexId,
+                Genre = movieDto.Genre
+            };
+
+
+            return await _movieRepository.AddMovies(newMovie);
         }
     }
 }
