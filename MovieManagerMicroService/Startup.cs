@@ -95,7 +95,8 @@ namespace MovieManagerMicroService
             services.AddTransient<IMovieService, MovieService>();
             services.AddTransient<IMovieRepository, MovieRepository>();
 
-            // services.AddOData();
+            services.AddOData();
+
             services.AddSwaggerGen(opt =>
             {
                 opt.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Movie Manager MicroService", Version = "v1" });
@@ -113,39 +114,43 @@ namespace MovieManagerMicroService
         /// <param name="env">env</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //IEdmModel model = EdmModelBuilder.Build();
-            //app.UseOData(model);
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseMvc(routeBuilder =>
-            //{
-            //    routeBuilder.Expand().Select().Filter().Count().OrderBy();
-            //    routeBuilder.MapODataServiceRoute("odata", "odata", model);
-            //    routeBuilder.MapRoute(
-            //      name: "Default",
-            //      template: "{controller=Home}/{action=Index}/{id?}");
-            //});
+            app.UseMvc(routeBuilder =>
+            {
+                routeBuilder.Expand().Select().Filter().Count().OrderBy();
+                routeBuilder.MapODataServiceRoute("odata", "odata", GetEdmModel());
+                routeBuilder.MapRoute(
+                  name: "Default",
+                  template: "{controller=Home}/{action=Index}/{id?}");
+            });
 
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
+
             app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
             app.UseSwaggerUI(option =>
             {
                 option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
             });
 
-            
-
             app.UseRouting();
-            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private IEdmModel GetEdmModel()
+        {
+            var odataBuilder = new ODataConventionModelBuilder();
+            odataBuilder.EntitySet<CityDTO>("CityDTO");
+
+            return odataBuilder.GetEdmModel();
         }
     }
 }

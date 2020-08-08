@@ -9,7 +9,7 @@ namespace MovieManagerMicroService.ServiceProvider
 {
     public interface IMovieService
     {
-        Task<List<City>> GetCities();
+        Task<List<CityDTO>> GetCities();
 
         Task<List<Multiplex>> GetMultiplexesByCity(int cityId);
 

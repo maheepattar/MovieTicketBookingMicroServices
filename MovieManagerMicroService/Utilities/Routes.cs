@@ -10,7 +10,7 @@ namespace MovieManagerMicroService.Utilities
     /// </summary>
     public class Routes
     {
-        public const string GetCities = "city";
+        public const string GetCities = "cities";
 
         public const string MultiplexesByCity = "multiplex/{cityId}";
 

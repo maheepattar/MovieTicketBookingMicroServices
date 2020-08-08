@@ -19,7 +19,7 @@ namespace MovieManagerMicroService.Controllers
     /// Movie Controller
     /// </summary>
     [Route("api/movie")]
-    [Authorize(Roles = Role.Customer)]
+    //[Authorize(Roles = Role.Customer)]
     [ApiController]
     public class MovieController : ControllerBase
     {
@@ -46,21 +46,12 @@ namespace MovieManagerMicroService.Controllers
         [Route(Routes.GetCities)]
         public async Task<IActionResult> Cities()
         {
-            var results = new List<CityDTO>();
             var cities = await _movieService.GetCities();
 
             if (cities == null || cities.Count() <= 0)
                 return NoContent();
 
-            foreach (City city in cities)
-            {
-                results.Add(new CityDTO
-                {
-                    CityId = city.Id,
-                    CityName = city.CityName
-                });
-            }
-
+            
             return Ok(cities);
         }
 
@@ -163,7 +154,6 @@ namespace MovieManagerMicroService.Controllers
         [HttpGet]
         [Route(Routes.MoviesByLanguage)]
         [EnableQuery()]
-        [ODataRoute("MoviesByLanguage(language={language})()")]
         public async Task<IActionResult> MoviesByLanguage(string language)
         {
             if (string.IsNullOrWhiteSpace(language))

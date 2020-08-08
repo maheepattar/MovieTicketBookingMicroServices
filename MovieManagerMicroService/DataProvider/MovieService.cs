@@ -31,9 +31,21 @@ namespace MovieManagerMicroService.ServiceProvider
         /// Get a list of all cities
         /// </summary>
         /// <returns></returns>
-        public async Task<List<City>> GetCities()
+        public async Task<List<CityDTO>> GetCities()
         {
-            return await _movieRepository.GetCities();
+            var cities = new List<CityDTO>();
+            var results = await _movieRepository.GetCities();
+            
+            foreach (City city in results)
+            {
+                cities.Add(new CityDTO
+                {
+                    CityId = city.Id,
+                    CityName = city.CityName
+                });
+            }
+
+            return cities;
         }
 
         /// <summary>
