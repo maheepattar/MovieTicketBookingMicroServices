@@ -13,4 +13,11 @@ namespace UserIdentityMicroService.Utilities
 
         public const string UnknownError = "Error occured while processing request. Try again.";
     }
+
+    public enum Roles
+    {
+        Admin = 1,
+        Customer = 2
+
+    }
 }
