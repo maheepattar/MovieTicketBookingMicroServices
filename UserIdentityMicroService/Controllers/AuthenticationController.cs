@@ -147,9 +147,9 @@ namespace UserIdentityMicroService.Controllers
             var token = new JwtSecurityToken(
                     issuer: "smesk.in",
                     audience: "readers",
-                    expires: DateTime.Now.AddHours(1),
-                    signingCredentials: signingCredentials
-                    , claims: claims
+                    expires: DateTime.Now.AddHours(5),
+                    signingCredentials: signingCredentials,
+                    claims: claims
                 );
 
 
