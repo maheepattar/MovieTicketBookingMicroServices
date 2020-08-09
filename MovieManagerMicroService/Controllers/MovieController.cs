@@ -19,7 +19,7 @@ namespace MovieManagerMicroService.Controllers
     /// Movie Controller
     /// </summary>
     [Route("api/movie")]
-    //[Authorize(Roles = Role.Customer)]
+    [Authorize(Roles = Role.Customer)]
     [ApiController]
     public class MovieController : ControllerBase
     {

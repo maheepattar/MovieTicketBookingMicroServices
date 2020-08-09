@@ -39,55 +39,44 @@ namespace UserIdentityMicroService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IUserService, UserService>();
             services.AddMvc();
             services.AddCors();
             services.AddControllers();
-
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
 
-            // configure jwt authentication
+            // configure DB connection
             var appSettings = appSettingsSection.Get<AppSettings>();
             var connectionString = appSettings.ConnectionStrings;
             services.AddDbContext<UserContext>(o => o.UseSqlServer(connectionString));
-            var key = Encoding.ASCII.GetBytes(AppSettings.Secret);
-            
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.Events = new JwtBearerEvents
+
+
+            #region JWT
+            string securityKey = AppSettings.Secret;
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    OnTokenValidated = context =>
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                        var userId = int.Parse(context.Principal.Identity.Name);
-                        var user = userService.GetById(userId);
-                        if (user == null)
-                        {
-                            // return unauthorized if user no longer exists
-                            context.Fail("Unauthorized");
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+                        //what to validate
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+
+                        //setup validate data
+                        ValidIssuer = "smesk.in",
+                        ValidAudience = "readers",
+                        IssuerSigningKey = symmetricSecurityKey
+                    };
+                });
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            #endregion
 
             services.AddSwaggerGen(opt =>
             {
@@ -121,12 +110,15 @@ namespace UserIdentityMicroService
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader());
+                .AllowAnyHeader());           
 
+            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

@@ -36,6 +36,14 @@
             <response code="500">Internal Server Error</response>
             <returns>User Details</returns>
         </member>
+        <member name="M:UserIdentityMicroService.Controllers.AuthenticationController.GenerareToken(UserIdentityMicroService.DTO.UserDTO,System.String)">
+            <summary>
+            Generates Token
+            </summary>
+            <param name="user">user</param>
+            <param name="userRole">user role</param>
+            <returns></returns>
+        </member>
         <member name="T:UserIdentityMicroService.Utilities.CommonMethods">
             <summary>
             Common methods

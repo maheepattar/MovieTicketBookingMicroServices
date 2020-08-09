@@ -60,35 +60,22 @@ namespace UserIdentityMicroService.Controllers
             {
                 userInfo.Password = CommonMethods.EncryptText(userInfo.Password);
                 var user = await userService.Authenticate(userInfo.Username, userInfo.Password);
+                
                 if (user == null)
                     return StatusCode(400, new { message = Constants.WrongCredentials });
 
                 string userRole = Enum.GetName(typeof(Roles), user.RoleId);
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(AppSettings.Secret);
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim(ClaimTypes.Name, user.Username.ToString()),
-                        new Claim(ClaimTypes.Role, userRole)
-                    }),
-                    Expires = DateTime.UtcNow.AddDays(7),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var jwtSecurityToken = tokenHandler.WriteToken(token);
+                string jwttoken = GenerareToken(user, userRole);
 
                 return Ok(new
                 {
                     user.FirstName,
                     user.Username,
                     user.LastName,
-                    Token = jwtSecurityToken
+                    Token = jwttoken
                 });
             }
-            catch(CustomException ex)
+            catch (CustomException ex)
             {
                 return StatusCode(400, new { message = ex.Message });
             }
@@ -132,6 +119,42 @@ namespace UserIdentityMicroService.Controllers
             {
                 return StatusCode(500, new { message = ex.Message });
             }
+        }
+
+        /// <summary>
+        /// Generates Token
+        /// </summary>
+        /// <param name="user">user</param>
+        /// <param name="userRole">user role</param>
+        /// <returns></returns>
+        private static string GenerareToken(UserDTO user, string userRole)
+        {
+            //security key
+            string securityKey = AppSettings.Secret;
+            //symmetric security key
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
+
+            //signing credentials
+            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
+
+            //add claims
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Name, user.Username));
+            claims.Add(new Claim(ClaimTypes.Role, userRole));
+            claims.Add(new Claim("Our_Custom_Claim", "Our custom value"));
+
+            //create token
+            var token = new JwtSecurityToken(
+                    issuer: "smesk.in",
+                    audience: "readers",
+                    expires: DateTime.Now.AddHours(1),
+                    signingCredentials: signingCredentials
+                    , claims: claims
+                );
+
+
+            var jwttoken = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwttoken;
         }
     }
 }

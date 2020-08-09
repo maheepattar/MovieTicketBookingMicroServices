@@ -40,33 +40,37 @@ namespace SeatBookingMicroService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
+            services.AddControllers();
             services.AddCors();
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSetting>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSetting>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             var connectionString = appSettings.ConnectionStrings;
 
             // configure jwt authentication
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+            #region JWT
+            string securityKey = AppSetting.Secret;
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        //what to validate
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+
+                        //setup validate data
+                        ValidIssuer = "smesk.in",
+                        ValidAudience = "readers",
+                        IssuerSigningKey = symmetricSecurityKey
+                    };
+                });
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            #endregion
 
             services.AddDbContext<SeatBookingContext>(o => o.UseSqlServer(connectionString));
 
@@ -91,6 +95,8 @@ namespace SeatBookingMicroService
                 app.UseDeveloperExceptionPage();
             }
 
+
+            #region Swagger
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
             app.UseSwagger(option => { option.RouteTemplate = swaggerOptions.JsonRoute; });
@@ -99,12 +105,18 @@ namespace SeatBookingMicroService
                 option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
             });
 
+            #endregion
+
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

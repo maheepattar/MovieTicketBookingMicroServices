@@ -63,39 +63,42 @@ namespace MovieManagerMicroService
         /// <param name="services">services</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(mvc => mvc.EnableEndpointRouting = false);
+            services.AddControllers();
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             var connectionString = appSettings.ConnectionStrings;
             services.AddDbContext<MovieContext>(o => o.UseSqlServer(connectionString));
 
-            // configure jwt authentication
+            #region JWT
+            string securityKey = AppSettings.Secret;
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        //what to validate
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
 
+                        //setup validate data
+                        ValidIssuer = "smesk.in",
+                        ValidAudience = "readers",
+                        IssuerSigningKey = symmetricSecurityKey
+                    };
+                });
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            #endregion
+
+            // Configure DI
             services.AddTransient<IMovieService, MovieService>();
             services.AddTransient<IMovieRepository, MovieRepository>();
 
-            services.AddOData();
+            // services.AddOData();
 
             services.AddSwaggerGen(opt =>
             {
@@ -119,15 +122,17 @@ namespace MovieManagerMicroService
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc(routeBuilder =>
-            {
-                routeBuilder.Expand().Select().Filter().Count().OrderBy();
-                routeBuilder.MapODataServiceRoute("odata", "odata", GetEdmModel());
-                routeBuilder.MapRoute(
-                  name: "Default",
-                  template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            //app.UseMvc(routeBuilder =>
+            //{
+            //    routeBuilder.Expand().Select().Filter().Count().OrderBy();
+            //    routeBuilder.MapODataServiceRoute("odata", "odata", GetEdmModel());
+            //    routeBuilder.MapRoute(
+            //      name: "Default",
+            //      template: "{controller=Home}/{action=Index}/{id?}");
+            //});
 
+
+            #region Swagger
             var swaggerOptions = new SwaggerOptions();
             Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
 
@@ -135,10 +140,18 @@ namespace MovieManagerMicroService
             app.UseSwaggerUI(option =>
             {
                 option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
-            });
+            }); 
+            #endregion
 
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+            app.UseHttpsRedirection();
             app.UseRouting();
-
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
