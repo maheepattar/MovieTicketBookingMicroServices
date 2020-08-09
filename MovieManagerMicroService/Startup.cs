@@ -63,8 +63,6 @@ namespace MovieManagerMicroService
         /// <param name="services">services</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
             var appSettings = appSettingsSection.Get<AppSettings>();
@@ -98,7 +96,8 @@ namespace MovieManagerMicroService
             services.AddTransient<IMovieService, MovieService>();
             services.AddTransient<IMovieRepository, MovieRepository>();
 
-            // services.AddOData();
+            services.AddOData();
+            services.AddControllers(opt => opt.EnableEndpointRouting = false);
 
             services.AddSwaggerGen(opt =>
             {
@@ -122,14 +121,11 @@ namespace MovieManagerMicroService
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseMvc(routeBuilder =>
-            //{
-            //    routeBuilder.Expand().Select().Filter().Count().OrderBy();
-            //    routeBuilder.MapODataServiceRoute("odata", "odata", GetEdmModel());
-            //    routeBuilder.MapRoute(
-            //      name: "Default",
-            //      template: "{controller=Home}/{action=Index}/{id?}");
-            //});
+            app.UseMvc(routeBuilder =>
+            {
+                routeBuilder.Expand().Select().Filter().Count().OrderBy();
+                routeBuilder.MapODataServiceRoute("odata", "odata", GetEdmModel());
+            });
 
 
             #region Swagger
