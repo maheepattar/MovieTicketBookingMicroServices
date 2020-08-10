@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using MovieManagerMicroService.DataContext;
 using MovieManagerMicroService.DBEntities;
 using MovieManagerMicroService.DTO;
@@ -7,6 +8,7 @@ using MovieManagerMicroService.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace MovieManagerMicroService.ServiceProvider
@@ -131,6 +133,28 @@ namespace MovieManagerMicroService.ServiceProvider
 
 
             return await _movieRepository.AddMovies(newMovie);
+        }
+
+        /// <summary>
+        /// Adds city
+        /// </summary>
+        /// <param name="cityDto">cityDto</param>
+        /// <returns>City</returns>
+        public async Task<CityDTO> AddCity(CityDTO cityDto)
+        {
+            // Check if Same has been already added into DB
+            var result = await this.GetCities();
+            if (result.Any(a => a.CityName == cityDto.CityName))
+                throw new CustomException($"City with the name {cityDto.CityName} already added.");
+
+            City city = new City
+            {
+                CityName = cityDto.CityName
+            };
+
+            var cityAdded = await _movieRepository.AddCity(city);
+            cityDto.CityId = cityAdded.Id;
+            return cityDto;
         }
     }
 }

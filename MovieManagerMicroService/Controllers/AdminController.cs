@@ -66,5 +66,40 @@ namespace MovieManagerMicroService.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Add new movie
+        /// </summary>
+        /// <param name="cityDTO">city data object</param>
+        /// <response code="200">Success</response>
+        /// <response code="201">Created</response>
+        /// <response code="204">No COntent</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">Internal Server Error</response>
+        /// <returns>added movie details</returns>
+        [HttpPost]
+        [Route("addCity")]
+        public async Task<IActionResult> AddCity([FromBody] CityDTO cityDTO)
+        {
+            if (cityDTO == null)
+                return StatusCode(400, new { message = Constants.MissingOrInvalidBody });
+
+            if (!ModelState.IsValid)
+                return StatusCode(400, new { message = Constants.MissingOrInvalidBody });
+
+            try
+            {
+                var result = await _movieService.AddCity(cityDTO);
+                return Created("AddedCity", new { id = result.CityId, Name = result.CityName });
+            }
+            catch (CustomException ex)
+            {
+                return StatusCode(400, new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }

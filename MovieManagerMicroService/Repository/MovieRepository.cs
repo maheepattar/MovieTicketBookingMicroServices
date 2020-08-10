@@ -85,5 +85,17 @@ namespace MovieManagerMicroService.Repository
         {
             return await movieContext.Multiplexes.Where(x => x.CityId == cityId).ToListAsync();
         }
+
+        /// <summary>
+        /// Adds City
+        /// </summary>
+        /// <param name="city">city</param>
+        /// <returns>City</returns>
+        public async Task<City> AddCity(City city)
+        {
+            await movieContext.Cities.AddAsync(city);
+            await movieContext.SaveChangesAsync();
+            return city;
+        }
     }
 }

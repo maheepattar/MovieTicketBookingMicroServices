@@ -43,6 +43,15 @@ namespace MovieManagerMicroServiceUnitTest
             };
 
             _movieRepositoryMock.Setup(x => x.GetMovies(It.IsAny<int>())).ReturnsAsync(movies);
+
+            List<City> cities = new List<City>()
+            {
+                new City{ Id = 1, CityName = "Chennai"},
+                new City{ Id =21, CityName = "Hyderbad"}
+            };
+
+            _movieRepositoryMock.Setup(x => x.GetCities()).ReturnsAsync(cities);
+            _movieRepositoryMock.Setup(a => a.AddCity(new City())).ReturnsAsync(new City { Id = 5, CityName = "Jaipur" });
         }
        
         [Test]
@@ -73,5 +82,35 @@ namespace MovieManagerMicroServiceUnitTest
             // Assert
             Assert.AreEqual("Another movie in this multiplex has been scheduled at the same time", ex.Exception.InnerException.Message);
         }
+
+        [Test]
+        public async Task WhenCityObject_IsNull_ReturnsBadRequest()
+        {
+            // Arrange
+            CityDTO cityDTO = null;
+
+            // Act
+            var result = (ObjectResult)await _adminController.AddCity(cityDTO);
+
+            // Assert
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
+        }
+
+        [Test]
+        public void WhenCityDataValid_IfCityAlreadyAdded_ReturnsBadRequest()
+        {
+            // Arrange
+            CityDTO cityDTO = new CityDTO()
+            {
+                CityName = "Chennai"
+            };
+
+            // Act
+            var ex = _movieService.AddCity(cityDTO);
+
+            // Assert
+            Assert.AreEqual($"City with the name {cityDTO.CityName} already added.", ex.Exception.InnerException.Message);
+        }
+
     }
 }

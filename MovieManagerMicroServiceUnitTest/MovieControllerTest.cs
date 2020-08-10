@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using MovieManagerMicroService.Controllers;
 using MovieManagerMicroService.DBEntities;
+using MovieManagerMicroService.DTO;
 using MovieManagerMicroService.Repository;
 using MovieManagerMicroService.ServiceProvider;
 using NUnit.Framework;
@@ -31,16 +32,16 @@ namespace MovieManagerMicroServiceUnitTest
         {
             _movieServiceMock = new Mock<IMovieService>();
             _movieServiceMock.Setup(a => a.GetCities())
-                .ReturnsAsync(() => new List<City>(new List<City>
+                .ReturnsAsync(() => new List<CityDTO>(new List<CityDTO>
                 {
-                    new City
+                    new CityDTO
                     {
-                        Id = 1,
+                        CityId = 1,
                         CityName = "Bengaluru"
                     },
-                    new City
+                    new CityDTO
                     {
-                        Id = 1,
+                        CityId = 1,
                         CityName = "Bengaluru"
                     }
                 }));
@@ -51,7 +52,7 @@ namespace MovieManagerMicroServiceUnitTest
         {
             // Arrange
             _movieServiceMock.Setup(a => a.GetCities())
-               .ReturnsAsync(() => new List<City>(new List<City> { }));
+               .ReturnsAsync(() => new List<CityDTO>(new List<CityDTO> { }));
 
             // Act
             var result =  (NoContentResult) await _movieController.Cities();

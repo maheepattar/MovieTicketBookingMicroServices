@@ -19,6 +19,8 @@ namespace MovieManagerMicroService.ServiceProvider
 
         Task<int> AddMovies(MovieDTO movieDto);
 
+        Task<CityDTO> AddCity(CityDTO cityDto);
+
         Task<List<Movie>> GetMoviesByGenre(string genre);
     }
 }
