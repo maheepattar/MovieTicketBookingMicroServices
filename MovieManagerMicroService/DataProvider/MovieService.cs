@@ -156,5 +156,28 @@ namespace MovieManagerMicroService.ServiceProvider
             cityDto.CityId = cityAdded.Id;
             return cityDto;
         }
+
+        /// <summary>
+        /// Adds multiplex
+        /// </summary>
+        /// <param name="multiplexDto">multiplex object</param>
+        /// <returns></returns>
+        public async Task<MultiplexDTO> AddMultiplex(MultiplexDTO multiplexDto)
+        {
+            // Check if Same has been already added into DB
+            var result = await this.GetMultiplexesByCity(multiplexDto.CityId);
+            if (result.Any(a => a.MultiplexName == multiplexDto.MultiplexName))
+                throw new CustomException($"Multilex with the name {multiplexDto.MultiplexName} already added.");
+
+            Multiplex multiplex = new Multiplex
+            {
+                MultiplexName = multiplexDto.MultiplexName,
+                CityId = multiplexDto.CityId
+            };
+
+            var multiplexAdded = await _movieRepository.AddMultiplex(multiplex);
+            multiplexDto.Id= multiplexAdded.Id;
+            return multiplexDto;
+        }
     }
 }

@@ -37,7 +37,19 @@
             <response code="204">No COntent</response>
             <response code="401">Unauthorized</response>
             <response code="500">Internal Server Error</response>
-            <returns>added movie details</returns>
+            <returns>added city details</returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Controllers.AdminController.AddMultiplex(MovieManagerMicroService.DTO.MultiplexDTO)">
+            <summary>
+            Add new movie
+            </summary>
+            <param name="multiplexDTO">multiplex object</param>
+            <response code="200">Success</response>
+            <response code="201">Created</response>
+            <response code="204">No COntent</response>
+            <response code="401">Unauthorized</response>
+            <response code="500">Internal Server Error</response>
+            <returns>added multiplex details</returns>
         </member>
         <member name="T:MovieManagerMicroService.Controllers.MovieController">
             <summary>
@@ -162,6 +174,13 @@
             <param name="cityDto">cityDto</param>
             <returns>City</returns>
         </member>
+        <member name="M:MovieManagerMicroService.ServiceProvider.MovieService.AddMultiplex(MovieManagerMicroService.DTO.MultiplexDTO)">
+            <summary>
+            Adds multiplex
+            </summary>
+            <param name="multiplexDto">multiplex object</param>
+            <returns></returns>
+        </member>
         <member name="T:MovieManagerMicroService.DTO.CityDTO">
             <summary>
             City DTO
@@ -215,6 +234,13 @@
             Adds City
             </summary>
             <param name="city">city</param>
+            <returns>Integer value</returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.IMovieRepository.AddMultiplex(MovieManagerMicroService.DBEntities.Multiplex)">
+            <summary>
+            Adds Multiplex
+            </summary>
+            <param name="multiplex">multiplex</param>
             <returns>Integer value</returns>
         </member>
         <member name="M:MovieManagerMicroService.Repository.IMovieRepository.GetMoviesByGenre(System.String)">
@@ -281,6 +307,13 @@
             </summary>
             <param name="city">city</param>
             <returns>City</returns>
+        </member>
+        <member name="M:MovieManagerMicroService.Repository.MovieRepository.AddMultiplex(MovieManagerMicroService.DBEntities.Multiplex)">
+            <summary>
+            Adds multiplex
+            </summary>
+            <param name="multiplex">multiplex</param>
+            <returns></returns>
         </member>
         <member name="T:MovieManagerMicroService.Startup">
             <summary>

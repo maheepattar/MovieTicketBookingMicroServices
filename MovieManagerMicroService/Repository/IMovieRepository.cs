@@ -54,6 +54,13 @@ namespace MovieManagerMicroService.Repository
         Task<City> AddCity(City city);
 
         /// <summary>
+        /// Adds Multiplex
+        /// </summary>
+        /// <param name="multiplex">multiplex</param>
+        /// <returns>Integer value</returns>
+        Task<Multiplex> AddMultiplex(Multiplex multiplex);
+
+        /// <summary>
         /// Gets the movies by genre
         /// </summary>
         /// <param name="genre">genre</param>

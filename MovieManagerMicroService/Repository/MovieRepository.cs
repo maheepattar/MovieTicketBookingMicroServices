@@ -97,5 +97,17 @@ namespace MovieManagerMicroService.Repository
             await movieContext.SaveChangesAsync();
             return city;
         }
+
+        /// <summary>
+        /// Adds multiplex
+        /// </summary>
+        /// <param name="multiplex">multiplex</param>
+        /// <returns></returns>
+        public async Task<Multiplex> AddMultiplex(Multiplex multiplex)
+        {
+            await movieContext.Multiplexes.AddAsync(multiplex);
+            await movieContext.SaveChangesAsync();
+            return multiplex;
+        }
     }
 }
